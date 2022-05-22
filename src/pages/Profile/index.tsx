@@ -44,7 +44,6 @@ const renderUserProfileFeed = ({item}: {item: Item}) => {
 
 // Header for flatlist
 const FlatListHeader = ({data}: {data: User}) => {
-  const navigation = useNavigation();
   const {Theme} = useContext(ThemeContext);
 
   useEffect(() => {
