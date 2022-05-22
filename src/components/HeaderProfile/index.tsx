@@ -150,10 +150,10 @@ const styles = StyleSheet.create({
   },
   heading: {
     fontFamily: CustomFonts.Ubuntu.Medium,
-    fontSize: 16,
+    fontSize: 14,
   },
   count: {
-    fontSize: 18,
+    fontSize: 15,
   },
   followBtn: {
     justifyContent: 'center',

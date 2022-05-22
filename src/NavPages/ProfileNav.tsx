@@ -18,7 +18,20 @@ const ProfileNav = () => {
         headerShown: false,
       }}
       initialRouteName="Settings">
-      <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          headerShown: true,
+          title: '',
+          headerStyle: {
+            backgroundColor: Theme.PrimaryBackground,
+          },
+          headerTintColor: Theme.PrimaryText,
+          headerShadowVisible: false,
+        }}
+      />
+
       <Stack.Screen
         name="EditProfile"
         component={EditProfile}
