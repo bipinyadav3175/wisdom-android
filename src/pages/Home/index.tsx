@@ -110,7 +110,8 @@ type Item = {
   ownerId: string;
   ownerName: string;
   shortBio: string | null;
-  avatar: string;
+  avatar_50: string;
+  avatar_200: string;
   likes: number;
   commentCount: number;
   ownerUsername: string;

@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 //
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
@@ -79,13 +80,15 @@ const App = () => {
   return (
     <>
       <Provider>
-        <NavigationInsider />
+        <GestureHandlerRootView style={{flex: 1}}>
+          <NavigationInsider />
 
-        <StatusBar
-          animated={true}
-          barStyle={type === 'dark' ? 'light-content' : 'dark-content'}
-          backgroundColor={Theme.PrimaryBackground}
-        />
+          <StatusBar
+            animated={true}
+            barStyle={type === 'dark' ? 'light-content' : 'dark-content'}
+            backgroundColor={Theme.PrimaryBackground}
+          />
+        </GestureHandlerRootView>
       </Provider>
     </>
   );

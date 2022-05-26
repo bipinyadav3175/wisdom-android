@@ -155,7 +155,7 @@ const ArticleItem = ({
           onPress={() => {
             navigation.navigate('UserProfile', {id: data.ownerId});
           }}>
-          <Image source={{uri: data.avatar}} style={styles.avatar} />
+          <Image source={{uri: data.avatar_50}} style={styles.avatar} />
 
           <View style={styles.basicDetailCont}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>

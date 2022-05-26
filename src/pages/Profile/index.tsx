@@ -30,7 +30,8 @@ type Item = {
   category: string;
   ownerId: string;
   ownerName: string;
-  avatar: string;
+  avatar_50: string;
+  avatar_200: string;
   likes: number;
   commentCount: number;
   ownerUsername: string;
@@ -55,7 +56,7 @@ const FlatListHeader = ({data}: {data: User}) => {
       <View style={{width: '100%', height: 20}}></View>
       <HeaderProfile
         Theme={Theme}
-        avatar={data.avatar}
+        avatar={data.avatar_200}
         followerCount={data.followerCount}
         followingCount={data.followingCount}
         storyViews={data.storyViews}
@@ -87,7 +88,8 @@ type User = {
   id: string;
   name: string;
   username: string;
-  avatar: string;
+  avatar_50: string;
+  avatar_200: string;
   banner: string;
   storyViews: number;
   followerCount: number;
