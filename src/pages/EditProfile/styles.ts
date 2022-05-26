@@ -40,6 +40,10 @@ const styles = StyleSheet.create({
     fontFamily: CustomFonts.Ubuntu.Medium,
     fontSize: 20,
   },
+  tipText: {
+    fontSize: 14,
+    marginTop: 10,
+  },
 });
 
 export default styles;
