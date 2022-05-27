@@ -74,7 +74,8 @@ type Story = {
   ownerId: string;
   ownerName: string;
   ownerUsername: string;
-  ownerAvatar: string;
+  avatar_50: string;
+  avatar_200: string;
   title: string;
   dateCreated: number;
   tags: string[];
@@ -165,7 +166,7 @@ const ReadingPage = ({route}: {route: any}) => {
 
       <View style={styles.userInfo}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Image source={{uri: data?.ownerAvatar}} style={styles.avatar} />
+          <Image source={{uri: data?.avatar_50}} style={styles.avatar} />
 
           <View>
             <Text
