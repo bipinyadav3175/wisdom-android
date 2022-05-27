@@ -5,8 +5,10 @@ import {
   Pressable,
   Image,
   Dimensions,
+  ToastAndroid,
 } from 'react-native';
 import React, {useEffect, useContext} from 'react';
+import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
 // Icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -15,6 +17,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 
 //
 import ThemeContext from '../../contexts/ThemeContext';
+import AuthContext from '../../contexts/AuthContext';
 
 import {CustomFonts, Spacing} from '../../../theme';
 // Custom Hooks
@@ -23,6 +26,7 @@ import useImageAspectRatio from '../../utils/AspectRatio';
 import numberFormatter from '../../utils/numberFormatter';
 // Types
 import type {Item} from '../../pages/Home';
+import CONSTANTS from '../../../CONSTANTS';
 const deviceWidth = Dimensions.get('window').width;
 const thumbWidth = deviceWidth - 2 * Spacing.Padding.Normal;
 
@@ -40,6 +44,7 @@ const ArticleItem = ({
   self: boolean;
 }) => {
   const {Theme} = useContext(ThemeContext);
+  const {state} = useContext(AuthContext);
 
   var aspectRatio;
   var thumbHeight;
@@ -49,6 +54,31 @@ const ArticleItem = ({
   }
 
   const navigation = useNavigation<NavigationType>();
+
+  const deleteStory = async () => {
+    try {
+      const res = await axios.post(
+        `${CONSTANTS.BACKEND_URI}/delete-story`,
+        {
+          id: data.id,
+        },
+        {
+          headers: {
+            Authorization: state.token as string,
+          },
+        },
+      );
+
+      const resData = res.data;
+      ToastAndroid.show(resData?.message as string, ToastAndroid.SHORT);
+
+      if (resData.success) {
+        // Update the state which is in parent component
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   useEffect(() => {
     async function init() {
@@ -172,7 +202,9 @@ const ArticleItem = ({
             </Text>
           </View>
         </Pressable>
-        <Pressable style={{display: self ? 'flex' : 'none'}}>
+        <Pressable
+          onPress={deleteStory}
+          style={{display: self ? 'flex' : 'none'}}>
           <AntDesign name="delete" size={18} color={Theme.SecondaryText} />
         </Pressable>
         <Pressable
