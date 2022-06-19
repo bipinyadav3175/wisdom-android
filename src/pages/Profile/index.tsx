@@ -5,6 +5,7 @@ import {
   Pressable,
   FlatList,
   ActivityIndicator,
+  ToastAndroid,
 } from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
@@ -37,10 +38,6 @@ type Item = {
   ownerUsername: string;
   shortBio: string;
   dateCreated: number;
-};
-
-const renderUserProfileFeed = ({item}: {item: Item}) => {
-  return <ArticleItem data={item} showFollowBtn={false} self={true} />;
 };
 
 // Header for flatlist
@@ -107,6 +104,47 @@ const UserProfile = () => {
 
   const {state, logout} = useContext(AuthContext);
   const id = state.id;
+
+  const deleteStory = async (id: string) => {
+    try {
+      const res = await axios.post(
+        `${CONSTANTS.BACKEND_URI}/delete-story`,
+        {
+          id,
+        },
+        {
+          headers: {
+            Authorization: state.token as string,
+          },
+        },
+      );
+
+      const resData = res.data;
+      ToastAndroid.show(resData?.message as string, ToastAndroid.SHORT);
+
+      if (resData.success) {
+        // Update the state
+        setRecent(oldRecent => {
+          return oldRecent.filter(
+            story => story.id !== resData?.deletedStoryId,
+          );
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const renderUserProfileFeed = ({item}: {item: Item}) => {
+    return (
+      <ArticleItem
+        data={item}
+        showFollowBtn={false}
+        self={true}
+        onStoryDelete={deleteStory}
+      />
+    );
+  };
 
   const loadRecent = async () => {
     try {

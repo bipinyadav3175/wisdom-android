@@ -38,10 +38,12 @@ const ArticleItem = ({
   data,
   showFollowBtn,
   self,
+  onStoryDelete,
 }: {
   data: Item;
   showFollowBtn?: boolean;
   self: boolean;
+  onStoryDelete?: (id: string) => void;
 }) => {
   const {Theme} = useContext(ThemeContext);
   const {state} = useContext(AuthContext);
@@ -54,31 +56,6 @@ const ArticleItem = ({
   }
 
   const navigation = useNavigation<NavigationType>();
-
-  const deleteStory = async () => {
-    try {
-      const res = await axios.post(
-        `${CONSTANTS.BACKEND_URI}/delete-story`,
-        {
-          id: data.id,
-        },
-        {
-          headers: {
-            Authorization: state.token as string,
-          },
-        },
-      );
-
-      const resData = res.data;
-      ToastAndroid.show(resData?.message as string, ToastAndroid.SHORT);
-
-      if (resData.success) {
-        // Update the state which is in parent component
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   useEffect(() => {
     async function init() {
@@ -203,7 +180,7 @@ const ArticleItem = ({
           </View>
         </Pressable>
         <Pressable
-          onPress={deleteStory}
+          onPress={() => onStoryDelete?.(data.id)}
           style={{display: self ? 'flex' : 'none'}}>
           <AntDesign name="delete" size={18} color={Theme.SecondaryText} />
         </Pressable>
