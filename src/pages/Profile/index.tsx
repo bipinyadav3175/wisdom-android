@@ -38,6 +38,7 @@ type Item = {
   ownerUsername: string;
   shortBio: string;
   dateCreated: number;
+  isFollowedByYou: boolean;
 };
 
 // Header for flatlist

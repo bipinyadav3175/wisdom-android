@@ -115,6 +115,7 @@ type Item = {
   likes: number;
   commentCount: number;
   ownerUsername: string;
+  isFollowedByYou: boolean;
 };
 
 const renderHomeFeed = ({item}: {item: Item}) => {

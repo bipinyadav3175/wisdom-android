@@ -7,7 +7,7 @@ import {
   Dimensions,
   ToastAndroid,
 } from 'react-native';
-import React, {useEffect, useContext} from 'react';
+import React, {useEffect, useContext, useState} from 'react';
 import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
 // Icons
@@ -47,6 +47,7 @@ const ArticleItem = ({
 }) => {
   const {Theme} = useContext(ThemeContext);
   const {state} = useContext(AuthContext);
+  const [isFollowedByYou, setIsFollowedByYou] = useState(data.isFollowedByYou);
 
   var aspectRatio;
   var thumbHeight;
@@ -56,6 +57,33 @@ const ArticleItem = ({
   }
 
   const navigation = useNavigation<NavigationType>();
+
+  const FollowOrUnfollow = async () => {
+    try {
+      const res = await axios.post(
+        `${CONSTANTS.BACKEND_URI}/follow`,
+        {
+          id: data.ownerId.toString(),
+        },
+        {
+          headers: {
+            Authorization: state.token as string,
+          },
+        },
+      );
+
+      const resData = res.data;
+      if (resData.message) {
+        console.log(resData.message);
+      }
+      if (resData.success) {
+        setIsFollowedByYou(resData?.isFollowedByYou);
+      }
+    } catch (err) {
+      console.log(err);
+      return;
+    }
+  };
 
   useEffect(() => {
     async function init() {
@@ -185,11 +213,14 @@ const ArticleItem = ({
           <AntDesign name="delete" size={18} color={Theme.SecondaryText} />
         </Pressable>
         <Pressable
+          onPressIn={FollowOrUnfollow}
           style={[
             styles.followBtn,
             {display: showFollowBtn ? 'flex' : 'none'},
           ]}>
-          <Text style={styles.followText}>Follow</Text>
+          <Text style={styles.followText}>
+            {isFollowedByYou ? 'Unfollow' : 'Follow'}
+          </Text>
         </Pressable>
       </View>
 
