@@ -153,7 +153,7 @@ const ArticleItem = ({
       maxHeight: thumbWidth,
       marginTop: Spacing.Margin.Small,
       alignSelf: 'center',
-      borderRadius: 5,
+      borderRadius: 13, // 13 seems better than 5
     },
     title: {
       width: '100%',

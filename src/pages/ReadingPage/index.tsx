@@ -214,7 +214,7 @@ const ReadingPage = ({route}: {route: any}) => {
               <Image
                 source={{uri: item.url as string}}
                 style={{
-                  borderRadius: 5,
+                  borderRadius: 13, // 13 seems quite good than 5
                   width: '100%',
                   marginVertical: Spacing.Margin.Normal,
                   aspectRatio: item.aspectRatio as number,
