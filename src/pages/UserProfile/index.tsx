@@ -110,6 +110,9 @@ type Item = {
   ownerUsername: string;
   shortBio: string;
   dateCreated: number;
+  avatar_50: string;
+  avatar_200: string;
+  isFollowedByYou: boolean;
 };
 
 const renderUserProfileFeed = ({item}: {item: Item}) => {
