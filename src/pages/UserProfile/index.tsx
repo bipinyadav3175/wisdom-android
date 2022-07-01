@@ -131,11 +131,13 @@ const FlatListHeader = ({data}: {data: User}) => {
     <>
       <HeaderProfile
         Theme={Theme}
-        avatar={data.avatar}
+        avatar_50={data.avatar_50}
+        avatar_200={data.avatar_200}
         followerCount={data.followerCount}
         followingCount={data.followingCount}
         storyViews={data.storyViews}
         isFollowedByYou={data.isFollowedByYou}
+        userId={data.id}
       />
 
       {/* Name and bio */}
@@ -163,7 +165,8 @@ type User = {
   id: string;
   name: string;
   username: string;
-  avatar: string;
+  avatar_50: string;
+  avatar_200: string;
   banner: string;
   storyViews: number;
   followerCount: number;
