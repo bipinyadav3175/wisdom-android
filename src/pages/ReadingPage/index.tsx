@@ -74,6 +74,7 @@ type Story = {
   ownerId: string;
   ownerName: string;
   ownerUsername: string;
+  isFollowedByYou: boolean;
   avatar_50: string;
   avatar_200: string;
   title: string;
@@ -93,6 +94,34 @@ const ReadingPage = ({route}: {route: any}) => {
   const [loading, setLoading] = useState(true);
   const [isLiked, setIsLiked] = useState(false);
   const [likes, setLikes] = useState(0);
+  const [isFollowedByYou, setIsFollowedByYou] = useState(false);
+
+  const FollowOrUnfollow = async () => {
+    try {
+      const res = await axios.post(
+        `${CONSTANTS.BACKEND_URI}/follow`,
+        {
+          id: data?.ownerId as string,
+        },
+        {
+          headers: {
+            Authorization: state.token as string,
+          },
+        },
+      );
+
+      const resData = res.data;
+      if (resData.message) {
+        console.log(resData.message);
+      }
+      if (resData.success) {
+        setIsFollowedByYou(resData?.isFollowedByYou);
+      }
+    } catch (err) {
+      console.log(err);
+      return;
+    }
+  };
 
   const likeStory = async () => {
     try {
@@ -130,9 +159,10 @@ const ReadingPage = ({route}: {route: any}) => {
         const resData = res.data;
 
         if (resData.success) {
-          setData(resData.story);
-          setIsLiked(resData.isLiked as boolean);
-          setLikes(resData.story.likes as number);
+          setData(resData?.story);
+          setIsLiked(resData?.isLiked as boolean);
+          setLikes(resData?.story?.likes as number);
+          setIsFollowedByYou(resData?.isFollowedByYou as boolean);
           setLoading(false);
           return;
         }
@@ -182,8 +212,10 @@ const ReadingPage = ({route}: {route: any}) => {
           </View>
         </View>
 
-        <Pressable style={styles.followBtn}>
-          <Text style={styles.followText}>Follow</Text>
+        <Pressable onPress={FollowOrUnfollow} style={styles.followBtn}>
+          <Text style={styles.followText}>
+            {isFollowedByYou ? 'Unfollow' : 'Follow'}
+          </Text>
         </Pressable>
       </View>
 
@@ -256,8 +288,10 @@ const ReadingPage = ({route}: {route: any}) => {
           } • ${numberFormatter(data?.commentCount as number)} comments`}
         </Text>
 
-        <Pressable style={styles.followBtn}>
-          <Text style={[styles.followText]}>Follow</Text>
+        <Pressable onPress={FollowOrUnfollow} style={styles.followBtn}>
+          <Text style={[styles.followText]}>
+            {isFollowedByYou ? 'Unfollow' : 'Follow'}
+          </Text>
         </Pressable>
       </View>
 
