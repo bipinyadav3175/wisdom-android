@@ -54,7 +54,8 @@ const FlatListHeader = ({data}: {data: User}) => {
       <View style={{width: '100%', height: 20}}></View>
       <HeaderProfile
         Theme={Theme}
-        avatar={data.avatar_200}
+        avatar_200={data.avatar_200}
+        avatar_50={data.avatar_50}
         followerCount={data.followerCount}
         followingCount={data.followingCount}
         storyViews={data.storyViews}
