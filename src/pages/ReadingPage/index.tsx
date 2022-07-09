@@ -6,7 +6,14 @@ import {
   Pressable,
   ScrollView,
 } from 'react-native';
-import React, {useEffect, useContext, useState} from 'react';
+import React, {
+  useEffect,
+  useContext,
+  useState,
+  useRef,
+  useMemo,
+  createRef,
+} from 'react';
 import axios from 'axios';
 import KeepAwake from 'react-native-keep-awake';
 
@@ -20,6 +27,11 @@ import ThemeContext from '../../contexts/ThemeContext';
 import CONSTANTS from '../../../CONSTANTS';
 import AuthContext from '../../contexts/AuthContext';
 import numberFormatter from '../../utils/numberFormatter';
+
+// Bottom Sheet for comments
+import CommentsBottomSheetInsider from '../../components/CommentsBottomSheetInsider';
+import BottomSheet from '@gorhom/bottom-sheet';
+import {BottomSheetMethods} from '@gorhom/bottom-sheet/lib/typescript/types';
 
 const storyData = [
   {
@@ -95,6 +107,10 @@ const ReadingPage = ({route}: {route: any}) => {
   const [isLiked, setIsLiked] = useState(false);
   const [likes, setLikes] = useState(0);
   const [isFollowedByYou, setIsFollowedByYou] = useState(false);
+
+  // Bottom Sheet
+  const bs = useRef<BottomSheet>(null);
+  const snapPoints = useMemo(() => [500, '100%'], []);
 
   const FollowOrUnfollow = async () => {
     try {
@@ -187,78 +203,79 @@ const ReadingPage = ({route}: {route: any}) => {
   }
 
   return (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      style={[styles.container, {backgroundColor: Theme.PrimaryBackground}]}>
-      <Text style={[styles.title, {color: Theme.PrimaryText}]}>
-        {data?.title}
-      </Text>
+    <View style={{flex: 1}}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={[styles.container, {backgroundColor: Theme.PrimaryBackground}]}>
+        <Text style={[styles.title, {color: Theme.PrimaryText}]}>
+          {data?.title}
+        </Text>
 
-      <View style={styles.userInfo}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Image source={{uri: data?.avatar_50}} style={styles.avatar} />
+        <View style={styles.userInfo}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Image source={{uri: data?.avatar_50}} style={styles.avatar} />
 
-          <View>
-            <Text
-              numberOfLines={1}
-              style={[styles.userName, {color: Theme.PrimaryText}]}>
-              {data?.ownerName}
-            </Text>
-            <Text
-              numberOfLines={1}
-              style={[styles.bio, {color: Theme.SecondaryText}]}>
-              Not working at all
-            </Text>
+            <View>
+              <Text
+                numberOfLines={1}
+                style={[styles.userName, {color: Theme.PrimaryText}]}>
+                {data?.ownerName}
+              </Text>
+              <Text
+                numberOfLines={1}
+                style={[styles.bio, {color: Theme.SecondaryText}]}>
+                Not working at all
+              </Text>
+            </View>
           </View>
+
+          <Pressable onPress={FollowOrUnfollow} style={styles.followBtn}>
+            <Text style={styles.followText}>
+              {isFollowedByYou ? 'Unfollow' : 'Follow'}
+            </Text>
+          </Pressable>
         </View>
 
-        <Pressable onPress={FollowOrUnfollow} style={styles.followBtn}>
-          <Text style={styles.followText}>
-            {isFollowedByYou ? 'Unfollow' : 'Follow'}
-          </Text>
-        </Pressable>
-      </View>
-
-      {/* Story Data */}
-      {data?.data.map(item => {
-        if (item.type === 'P') {
-          return (
-            <Text
-              key={item.itemId}
-              style={{
-                color:
-                  type === 'dark' ? Theme.SecondaryText : Theme.PrimaryText,
-                fontSize: 18,
-                marginVertical: Spacing.Margin.Normal,
-                paddingHorizontal: Spacing.Padding.Normal,
-              }}>
-              {item.content}
-            </Text>
-          );
-        }
-        if (item.type === 'IMG') {
-          return (
-            <View
-              style={{
-                paddingHorizontal: Spacing.Padding.Normal,
-              }}
-              key={item.itemId}>
-              <Image
-                source={{uri: item.url as string}}
+        {/* Story Data */}
+        {data?.data.map(item => {
+          if (item.type === 'P') {
+            return (
+              <Text
+                key={item.itemId}
                 style={{
-                  borderRadius: 13, // 13 seems quite good than 5
-                  width: '100%',
+                  color:
+                    type === 'dark' ? Theme.SecondaryText : Theme.PrimaryText,
+                  fontSize: 18,
                   marginVertical: Spacing.Margin.Normal,
-                  aspectRatio: item.aspectRatio as number,
+                  paddingHorizontal: Spacing.Padding.Normal,
+                }}>
+                {item.content}
+              </Text>
+            );
+          }
+          if (item.type === 'IMG') {
+            return (
+              <View
+                style={{
+                  paddingHorizontal: Spacing.Padding.Normal,
                 }}
-                resizeMode="contain"
-              />
-            </View>
-          );
-        }
-      })}
+                key={item.itemId}>
+                <Image
+                  source={{uri: item.url as string}}
+                  style={{
+                    borderRadius: 13, // 13 seems quite good than 5
+                    width: '100%',
+                    marginVertical: Spacing.Margin.Normal,
+                    aspectRatio: item.aspectRatio as number,
+                  }}
+                  resizeMode="contain"
+                />
+              </View>
+            );
+          }
+        })}
 
-      {/* <View style={styles.actionsCont}>
+        {/* <View style={styles.actionsCont}>
             <View style={styles.lncContainer}>
               <View style={{flexDirection: "row"}}>
                 <Pressable>
@@ -281,54 +298,75 @@ const ReadingPage = ({route}: {route: any}) => {
             </Pressable>
           </View> */}
 
-      <View style={styles.statCont}>
-        <Text style={[styles.statText, {color: Theme.PrimaryText}]}>
-          {`${numberFormatter(likes as number)} ${
-            likes === 1 ? 'like' : 'likes'
-          } • ${numberFormatter(data?.commentCount as number)} comments`}
-        </Text>
-
-        <Pressable onPress={FollowOrUnfollow} style={styles.followBtn}>
-          <Text style={[styles.followText]}>
-            {isFollowedByYou ? 'Unfollow' : 'Follow'}
+        <View style={styles.statCont}>
+          <Text style={[styles.statText, {color: Theme.PrimaryText}]}>
+            {`${numberFormatter(likes as number)} ${
+              likes === 1 ? 'like' : 'likes'
+            } • ${numberFormatter(data?.commentCount as number)} comments`}
           </Text>
-        </Pressable>
-      </View>
 
-      <View
-        style={{
-          width: '100%',
-          height: StyleSheet.hairlineWidth,
-          backgroundColor: Theme.Placeholder,
-          marginTop: Spacing.Margin.Small,
+          <Pressable onPress={FollowOrUnfollow} style={styles.followBtn}>
+            <Text style={[styles.followText]}>
+              {isFollowedByYou ? 'Unfollow' : 'Follow'}
+            </Text>
+          </Pressable>
+        </View>
+
+        <View
+          style={{
+            width: '100%',
+            height: StyleSheet.hairlineWidth,
+            backgroundColor: Theme.Placeholder,
+            marginTop: Spacing.Margin.Small,
+          }}
+        />
+
+        <View style={styles.actionsCont}>
+          <View style={styles.actionBtn}>
+            {/* Use name="heart" for filled heart */}
+            <Pressable onPress={likeStory}>
+              {isLiked ? (
+                <AntDesign name="heart" size={24} color="#fc5c65" />
+              ) : (
+                <AntDesign
+                  name="hearto"
+                  size={24}
+                  color={Theme.SecondaryText}
+                />
+              )}
+            </Pressable>
+          </View>
+
+          <View style={styles.actionBtn}>
+            <Pressable
+              onPress={() => {
+                bs.current?.snapToIndex(0);
+                bs.current?.snapToIndex(1);
+              }}>
+              <Ionicons
+                name="chatbubble-outline"
+                size={24}
+                color={Theme.SecondaryText}
+              />
+            </Pressable>
+          </View>
+        </View>
+
+        <View style={{width: '100%', height: 30}} />
+      </ScrollView>
+      <BottomSheet
+        ref={bs}
+        index={-1}
+        backgroundStyle={{
+          backgroundColor:
+            type === 'dark' ? 'rgb(10,20,26)' : Theme.PrimaryBackground,
         }}
-      />
-
-      <View style={styles.actionsCont}>
-        <View style={styles.actionBtn}>
-          {/* Use name="heart" for filled heart */}
-          <Pressable onPress={likeStory}>
-            {isLiked ? (
-              <AntDesign name="heart" size={24} color="#fc5c65" />
-            ) : (
-              <AntDesign name="hearto" size={24} color={Theme.SecondaryText} />
-            )}
-          </Pressable>
-        </View>
-
-        <View style={styles.actionBtn}>
-          <Pressable>
-            <Ionicons
-              name="chatbubble-outline"
-              size={24}
-              color={Theme.SecondaryText}
-            />
-          </Pressable>
-        </View>
-      </View>
-
-      <View style={{width: '100%', height: 30}} />
-    </ScrollView>
+        handleIndicatorStyle={{backgroundColor: Theme.Placeholder}}
+        snapPoints={snapPoints}
+        enablePanDownToClose>
+        <CommentsBottomSheetInsider />
+      </BottomSheet>
+    </View>
   );
 };
 

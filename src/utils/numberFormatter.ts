@@ -1,16 +1,20 @@
 const numberFormatter = (num: number): string => {
+  // @ts-ignore
+  if (typeof num !== Number) {
+    return '0';
+  }
 
-    if(num > 1000_000_000){
-        return Math.abs(num/1000_000_000).toFixed(2) + "B"
-    }
-    if(num > 1000_000){
-        return Math.abs(num/1000_000).toFixed(2) + "M"
-    }
-    if(num > 1000){
-        return Math.abs(num/1000).toFixed(1) + "K"
-    }
+  if (num > 1000_000_000) {
+    return Math.abs(num / 1000_000_000).toFixed(2) + 'B';
+  }
+  if (num > 1000_000) {
+    return Math.abs(num / 1000_000).toFixed(2) + 'M';
+  }
+  if (num > 1000) {
+    return Math.abs(num / 1000).toFixed(1) + 'K';
+  }
 
-    return num.toString()
-}
+  return num.toString();
+};
 
-export default numberFormatter
+export default numberFormatter;
