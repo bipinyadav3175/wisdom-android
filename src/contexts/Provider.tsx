@@ -10,6 +10,7 @@ import React from 'react';
 import {AuthProvider} from './AuthContext';
 import {EditorProvider} from './EditorContext';
 import {ThemeProvider} from './ThemeContext';
+import {ListProvider} from './ListContext';
 
 // Library based
 
@@ -19,8 +20,10 @@ const Provider = ({children}: {children: React.ReactNode}) => {
     <ThemeProvider>
       <AuthProvider>
         <EditorProvider>
-          {/* From libraries */}
-          {children}
+          <ListProvider>
+            {/* From libraries */}
+            {children}
+          </ListProvider>
         </EditorProvider>
       </AuthProvider>
     </ThemeProvider>

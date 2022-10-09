@@ -7,9 +7,10 @@ import {
   Dimensions,
   ToastAndroid,
 } from 'react-native';
-import React, {useEffect, useContext, useState} from 'react';
+import React, {useEffect, useContext, useState, useRef, useMemo} from 'react';
 import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
+import BottomSheet from '@gorhom/bottom-sheet';
 // Icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -18,6 +19,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 //
 import ThemeContext from '../../contexts/ThemeContext';
 import AuthContext from '../../contexts/AuthContext';
+import ListContext from '../../contexts/ListContext';
 
 import {CustomFonts, Spacing} from '../../../theme';
 // Custom Hooks
@@ -27,6 +29,10 @@ import numberFormatter from '../../utils/numberFormatter';
 // Types
 import type {Item} from '../../pages/Home';
 import CONSTANTS from '../../../CONSTANTS';
+
+// Event emitter
+import ArticleEmitter from '../../EventEmitters/ArticleEmitter';
+
 const deviceWidth = Dimensions.get('window').width;
 const thumbWidth = deviceWidth - 2 * Spacing.Padding.Normal;
 
@@ -39,15 +45,21 @@ const ArticleItem = ({
   showFollowBtn,
   self,
   onStoryDelete,
+  onAddToReadingList,
 }: {
   data: Item;
   showFollowBtn?: boolean;
   self: boolean;
   onStoryDelete?: (id: string) => void;
+  onAddToReadingList: (id: string) => void;
 }) => {
   const {Theme} = useContext(ThemeContext);
   const {state} = useContext(AuthContext);
+  const {changeId} = useContext(ListContext);
   const [isFollowedByYou, setIsFollowedByYou] = useState(data.isFollowedByYou);
+  const [isAddedToReadingList, setIsAddedToReadingList] = useState(
+    data.isAddedToList,
+  );
 
   var aspectRatio;
   var thumbHeight;
@@ -85,14 +97,39 @@ const ArticleItem = ({
     }
   };
 
+  // useEffect(() => {
+  //   if (!bookmarked) {
+  //     return;
+  //   }
+
+  //   if (bookmarked.includes(data.id)) {
+  //     setIsAddedToReadingList(true);
+  //     return;
+  //   }
+  //   setIsAddedToReadingList(false);
+  // }, bookmarked);
+
   useEffect(() => {
     async function init() {
+      // console.log(data.id);
       // await AsyncStorage.setItem(STORAGE_KEY.THEME, 'dark');
+      ArticleEmitter.addListener(
+        'added-to-list',
+        (info: [{storyId: string}]) => {
+          const storyId = info[0].storyId;
+
+          if (storyId === data.id) {
+            setIsAddedToReadingList(true);
+          }
+        },
+      );
     }
 
     init();
 
-    return () => {};
+    return () => {
+      ArticleEmitter.removeAllListeners();
+    };
   }, []);
 
   // Styles
@@ -183,97 +220,116 @@ const ArticleItem = ({
   });
 
   return (
-    <View style={styles.container}>
-      <View style={styles.userCont}>
-        <Pressable
-          style={styles.bioCont}
-          onPress={() => {
-            navigation.navigate('UserProfile', {id: data.ownerId});
-          }}>
-          <Image source={{uri: data.avatar_50}} style={styles.avatar} />
+    <>
+      <View style={styles.container}>
+        <View style={styles.userCont}>
+          <Pressable
+            style={styles.bioCont}
+            onPress={() => {
+              navigation.navigate('UserProfile', {id: data.ownerId});
+            }}>
+            <Image source={{uri: data.avatar_50}} style={styles.avatar} />
 
-          <View style={styles.basicDetailCont}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Text style={styles.name} numberOfLines={1}>
-                {data.ownerName}
-              </Text>
+            <View style={styles.basicDetailCont}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Text style={styles.name} numberOfLines={1}>
+                  {data.ownerName}
+                </Text>
 
-              <Text style={styles.username} numberOfLines={1}>
-                @{data.ownerUsername}
+                <Text style={styles.username} numberOfLines={1}>
+                  @{data.ownerUsername}
+                </Text>
+              </View>
+              <Text style={styles.bio} numberOfLines={1}>
+                {data.shortBio}
               </Text>
             </View>
-            <Text style={styles.bio} numberOfLines={1}>
-              {data.shortBio}
+          </Pressable>
+          <Pressable
+            onPress={() => onStoryDelete?.(data.id)}
+            style={{display: self ? 'flex' : 'none'}}>
+            <AntDesign name="delete" size={18} color={Theme.SecondaryText} />
+          </Pressable>
+          <Pressable
+            onPressIn={FollowOrUnfollow}
+            style={[
+              styles.followBtn,
+              {display: showFollowBtn ? 'flex' : 'none'},
+            ]}>
+            <Text style={styles.followText}>
+              {isFollowedByYou ? 'Unfollow' : 'Follow'}
             </Text>
-          </View>
-        </Pressable>
+          </Pressable>
+        </View>
+
         <Pressable
-          onPress={() => onStoryDelete?.(data.id)}
-          style={{display: self ? 'flex' : 'none'}}>
-          <AntDesign name="delete" size={18} color={Theme.SecondaryText} />
-        </Pressable>
-        <Pressable
-          onPressIn={FollowOrUnfollow}
-          style={[
-            styles.followBtn,
-            {display: showFollowBtn ? 'flex' : 'none'},
-          ]}>
-          <Text style={styles.followText}>
-            {isFollowedByYou ? 'Unfollow' : 'Follow'}
+          onPress={() => navigation.navigate('ReadingPage', {id: data.id})}>
+          <Text style={styles.title} numberOfLines={3}>
+            {data.title}
           </Text>
+
+          {data.thumb ? (
+            <View
+              style={{
+                width: '100%',
+                paddingHorizontal: Spacing.Padding.Normal,
+              }}>
+              <Image
+                source={{uri: data.thumb}}
+                style={[
+                  styles.thumbImage,
+                  {width: thumbWidth, height: thumbHeight},
+                ]}
+                resizeMethod="scale"
+              />
+            </View>
+          ) : (
+            <Text style={styles.bPreview} numberOfLines={5}>
+              {data.bodyPreview}
+            </Text>
+          )}
+
+          <View style={styles.bottomCont}>
+            <Text style={styles.statText}>
+              {numberFormatter(data.likes)} likes •{' '}
+              {numberFormatter(data.commentCount)} comments • {data.timeToRead}{' '}
+              min read
+            </Text>
+            <View style={{flexDirection: 'row'}}>
+              <Pressable
+                onPress={async () => {
+                  await changeId(data.id);
+                  onAddToReadingList(data.id);
+                  // setIsAddedToReadingList(isAdded);
+                }}>
+                {isAddedToReadingList ? (
+                  <Ionicons
+                    name="bookmark"
+                    size={20}
+                    // color={Theme.SecondaryText}
+                    color="#e17055"
+                  />
+                ) : (
+                  <Ionicons
+                    name="bookmark-outline"
+                    size={20}
+                    color={Theme.SecondaryText}
+                  />
+                )}
+              </Pressable>
+
+              <Pressable style={{marginLeft: Spacing.Margin.Normal}}>
+                <Entypo
+                  name="dots-three-horizontal"
+                  size={22}
+                  color={Theme.SecondaryText}
+                />
+              </Pressable>
+            </View>
+          </View>
         </Pressable>
       </View>
-
-      <Pressable
-        onPress={() => navigation.navigate('ReadingPage', {id: data.id})}>
-        <Text style={styles.title} numberOfLines={3}>
-          {data.title}
-        </Text>
-
-        {data.thumb ? (
-          <View
-            style={{width: '100%', paddingHorizontal: Spacing.Padding.Normal}}>
-            <Image
-              source={{uri: data.thumb}}
-              style={[
-                styles.thumbImage,
-                {width: thumbWidth, height: thumbHeight},
-              ]}
-              resizeMethod="scale"
-            />
-          </View>
-        ) : (
-          <Text style={styles.bPreview} numberOfLines={5}>
-            {data.bodyPreview}
-          </Text>
-        )}
-
-        <View style={styles.bottomCont}>
-          <Text style={styles.statText}>
-            {numberFormatter(data.likes)} likes •{' '}
-            {numberFormatter(data.commentCount)} comments • {data.timeToRead}{' '}
-            min read
-          </Text>
-          <View style={{flexDirection: 'row'}}>
-            <Pressable>
-              <Ionicons
-                name="bookmark-outline"
-                size={20}
-                color={Theme.SecondaryText}
-              />
-            </Pressable>
-
-            <Pressable style={{marginLeft: Spacing.Margin.Normal}}>
-              <Entypo
-                name="dots-three-horizontal"
-                size={22}
-                color={Theme.SecondaryText}
-              />
-            </Pressable>
-          </View>
-        </View>
-      </Pressable>
-    </View>
+    </>
   );
 };
 

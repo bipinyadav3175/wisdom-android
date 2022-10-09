@@ -25,9 +25,8 @@ const ListItem = ({
   data: {
     id: string;
     listName: string;
-    itemCount: number;
-    thumb: string;
-    categories: string[];
+    noOfStories: number;
+    thumb: null | string;
   };
 }) => {
   const navigation = useNavigation<Navigate>();
@@ -37,7 +36,11 @@ const ListItem = ({
       style={styles.container}
       onPress={() => navigation.navigate('ListPage', {id: data.id})}>
       <Image
-        source={{uri: data.thumb}}
+        source={
+          data.thumb
+            ? {uri: data.thumb}
+            : require('../../../assets/dev/mountain.jpg')
+        }
         style={styles.image}
         resizeMode="cover"
       />
@@ -46,9 +49,9 @@ const ListItem = ({
           {data.listName}
         </Text>
         <Text style={[styles.count, {color: Theme.SecondaryText}]}>
-          {data.itemCount} stories
+          {data.noOfStories} stories
         </Text>
-        <View style={styles.catCont}>
+        {/* <View style={styles.catCont}>
           {data.categories.length <= 3
             ? data.categories.map((cat, index) => {
                 return (
@@ -90,7 +93,7 @@ const ListItem = ({
                   );
                 }
               })}
-        </View>
+        </View> */}
       </View>
     </Pressable>
   );

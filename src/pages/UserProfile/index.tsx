@@ -113,6 +113,7 @@ type Item = {
   avatar_50: string;
   avatar_200: string;
   isFollowedByYou: boolean;
+  isAddedToList: boolean;
 };
 
 const renderUserProfileFeed = ({item}: {item: Item}) => {

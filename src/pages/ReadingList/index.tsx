@@ -6,9 +6,15 @@ import {
   ListRenderItem,
   FlatListProps,
 } from 'react-native';
-import React, {useContext} from 'react';
+import axios from 'axios';
+import React, {useContext, useEffect, useState} from 'react';
+import {useIsFocused} from '@react-navigation/native';
 
 import ThemeContext from '../../contexts/ThemeContext';
+import AuthContext from '../../contexts/AuthContext';
+
+import CONSTANTS from '../../../CONSTANTS';
+
 import {CustomFonts, Spacing} from '../../../theme';
 import ListItem from '../../components/ListItem';
 
@@ -42,17 +48,60 @@ const data = [
 type DataItemType = {
   id: string;
   listName: string;
-  itemCount: number;
-  thumb: string;
-  categories: string[];
+  noOfStories: number;
+  thumb: null | string;
 };
 
 const ReadingList = () => {
+  // const [data, setData] = useState<DataItemType[]>([]);
+  const isScreenFocused = useIsFocused();
+
   const {Theme} = useContext(ThemeContext);
+  const {state} = useContext(AuthContext);
+
+  const [data, setData] = useState<DataItemType[]>([]);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const renderLists = ({item}: {item: DataItemType}) => {
     return <ListItem Theme={Theme} data={item} key={item.id} />;
   };
+
+  const loadLists = async (
+    {initialLoad}: {initialLoad?: boolean} = {initialLoad: false},
+  ) => {
+    if (!initialLoad) {
+      setIsRefreshing(true);
+    }
+    try {
+      const res = await axios.post(
+        `${CONSTANTS.BACKEND_URI}/get-lists`,
+        {},
+        {
+          headers: {
+            Authorization: state.token as string,
+          },
+        },
+      );
+
+      const resData = res.data;
+      if (resData.success) {
+        setData(resData.data);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+    setIsRefreshing(false);
+  };
+
+  useEffect(() => {
+    if (isScreenFocused) {
+      loadLists();
+    }
+  }, [isScreenFocused]);
+
+  useEffect(() => {
+    loadLists({initialLoad: true});
+  }, []);
 
   return (
     <View
@@ -61,12 +110,17 @@ const ReadingList = () => {
         data={data}
         renderItem={renderLists}
         keyExtractor={item => item.id}
+        onRefresh={loadLists}
+        refreshing={isRefreshing}
         ListHeaderComponent={
           <View style={styles.header}>
             <Text style={[styles.title, {color: Theme.PrimaryText}]}>
               Reading List
             </Text>
           </View>
+        }
+        ListFooterComponent={
+          <View style={{width: '100%', height: Spacing.Margin.Large}} />
         }
         ItemSeparatorComponent={() => (
           <View style={{width: '100%', height: Spacing.Margin.Large}}></View>

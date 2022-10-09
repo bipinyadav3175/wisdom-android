@@ -1,7 +1,12 @@
 import {View, Text, StyleSheet, Pressable, Image, FlatList} from 'react-native';
-import React, {useContext} from 'react';
+import React, {useContext, useState, useEffect, useCallback} from 'react';
+import {useNavigation} from '@react-navigation/native';
+import axios from 'axios';
 
 import ThemeContext from '../../contexts/ThemeContext';
+import AuthContext from '../../contexts/AuthContext';
+
+import CONSTANTS from '../../../CONSTANTS';
 import {CustomFonts, Spacing} from '../../../theme';
 // Icons
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -87,12 +92,26 @@ const data = {
 };
 
 // Itemm
-const Item = ({data}: {data: any}) => {
+const Item = ({
+  data,
+  onRemovePress,
+}: {
+  data: any;
+  onRemovePress: (id: string) => void;
+}) => {
   const {Theme} = useContext(ThemeContext);
+  const user = data.user;
 
   return (
     <Pressable style={styles.itemCont}>
-      <Image source={{uri: data.thumb}} style={styles.image} />
+      <Image
+        source={
+          data.thumb
+            ? {uri: data.thumb}
+            : require('../../../assets/dev/mountain.jpg')
+        }
+        style={styles.image}
+      />
 
       <View style={[styles.rightBox]}>
         <Text
@@ -102,15 +121,16 @@ const Item = ({data}: {data: any}) => {
         </Text>
         <View style={styles.bottomCont}>
           <View style={styles.authorCont}>
-            <Image source={{uri: data.avatar}} style={styles.avatar} />
+            <Image source={{uri: user.avatar_50}} style={styles.avatar} />
             <Text
               style={[{color: Theme.PrimaryText}, styles.authorName]}
               numberOfLines={1}>
-              {data.authorName}
+              {user.name}
             </Text>
           </View>
 
           <Pressable
+            onPress={() => onRemovePress(data.id as string)}
             style={styles.rippleCont}
             android_ripple={{borderless: true, color: Theme.RippleColor}}>
             <AntDesign name="delete" size={17} color={Theme.SecondaryText} />
@@ -121,19 +141,137 @@ const Item = ({data}: {data: any}) => {
   );
 };
 
-// Render function for performance improvement
-const renderAllItems = ({item}: {item: any}) => {
-  return <Item data={item} key={item.id} />;
+type List = {
+  id: string;
+  thumb: null | string;
+  title: string;
+  user: {
+    id: string;
+    name: string;
+    avatar_50: string;
+    avatar_200: string;
+  };
+};
+
+type Data = {
+  id: string;
+  listName: string;
+  noOfStories: number;
+  thumb: null | string;
+  list: List[];
 };
 
 const ListPage = ({route}: {route: any}) => {
   const id = route.params.id;
   const {Theme} = useContext(ThemeContext);
+  const {state} = useContext(AuthContext);
+
+  const navigation = useNavigation();
+
+  const [data, setData] = useState<Data>({
+    id: '',
+    listName: '',
+    noOfStories: 0,
+    thumb: null,
+    list: [],
+  });
+
+  // Render callback function for performance improvement
+  const renderAllItems = useCallback(({item}: {item: any}) => {
+    return (
+      <Item data={item} key={item.id} onRemovePress={removeStoryFromList} />
+    );
+  }, []);
+
+  const deleteList = async () => {
+    try {
+      const res = await axios.post(
+        `${CONSTANTS.BACKEND_URI}/delete-reading-list`,
+        {id},
+        {
+          headers: {
+            Authorization: state.token as string,
+          },
+        },
+      );
+
+      const resData = res.data;
+
+      if (resData.success) {
+        navigation.goBack();
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const removeStoryFromList = async (storyId: string) => {
+    try {
+      const res = await axios.post(
+        `${CONSTANTS.BACKEND_URI}/remove-story-from-list`,
+        {
+          storyId,
+          listId: id,
+        },
+        {
+          headers: {
+            Authorization: state.token as string,
+          },
+        },
+      );
+
+      const resData = res.data;
+
+      if (resData.success && resData.removedId) {
+        setData(oldData => {
+          return {
+            ...oldData,
+            list: oldData.list.filter(
+              list => list.id !== resData.removedId.toString(),
+            ),
+          };
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    async function init() {
+      try {
+        const res = await axios.post(
+          `${CONSTANTS.BACKEND_URI}/get-list`,
+          {
+            id,
+          },
+          {
+            headers: {
+              Authorization: state.token as string,
+            },
+          },
+        );
+
+        const resData = res.data;
+
+        console.log(resData);
+
+        if (resData.success) {
+          setData(resData.data);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+    init();
+  }, []);
+
   return (
     <View
       style={[styles.container, {backgroundColor: Theme.PrimaryBackground}]}>
       <FlatList
-        data={data.items}
+        data={data.list}
         renderItem={renderAllItems}
         keyExtractor={item => item.id}
         ItemSeparatorComponent={() => (
@@ -143,13 +281,15 @@ const ListPage = ({route}: {route: any}) => {
         ListHeaderComponent={
           <View style={styles.topBox}>
             <Text style={[styles.name, {color: Theme.PrimaryText}]}>
-              {data.listname}
+              {data.listName}
             </Text>
             <Text style={[styles.count, {color: Theme.SecondaryText}]}>
-              {data.itemCount} {data.itemCount === 1 ? 'story' : 'stories'}
+              {data?.noOfStories}{' '}
+              {data?.noOfStories === 1 ? 'story' : 'stories'}
             </Text>
             <View style={styles.actionCont}>
               <Pressable
+                onPress={deleteList}
                 style={styles.rippleCont}
                 android_ripple={{borderless: true, color: Theme.RippleColor}}>
                 <AntDesign

@@ -33,6 +33,7 @@ type ContextType = {
         username: string | null;
       }) => Promise<void>)
     | (() => void);
+  isAuthLoading: boolean;
 };
 
 const defaultFunc = () => {};
@@ -41,10 +42,12 @@ const AuthContext = createContext<ContextType>({
   state: defaultValue,
   logout: defaultFunc,
   addUser: defaultFunc,
+  isAuthLoading: true,
 });
 
 const AuthProvider = ({children}: {children: React.ReactNode}) => {
   const [state, setState] = useState<AuthState>(defaultValue);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
 
   useEffect(() => {
     async function init() {
@@ -68,6 +71,8 @@ const AuthProvider = ({children}: {children: React.ReactNode}) => {
       } catch (err) {
         console.log(err);
       }
+
+      setIsAuthLoading(false);
     }
 
     init();
@@ -108,7 +113,7 @@ const AuthProvider = ({children}: {children: React.ReactNode}) => {
   };
 
   return (
-    <AuthContext.Provider value={{state, logout, addUser}}>
+    <AuthContext.Provider value={{state, logout, addUser, isAuthLoading}}>
       {children}
     </AuthContext.Provider>
   );

@@ -15,8 +15,13 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 //
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
+// Toast message
+import Toast from 'react-native-toast-message';
+
 // Universal Provider
 import Provider from './src/contexts/Provider';
+// Portal
+import {PortalProvider} from '@gorhom/portal';
 
 import AuthContext from './src/contexts/AuthContext';
 import ThemeContext from './src/contexts/ThemeContext';
@@ -32,6 +37,8 @@ import EditorNav from './src/NavPages/EditorNav';
 import Login from './src/pages/Login';
 // Username Page
 import Username from './src/pages/Username';
+// Splash Screen
+import Splash from './src/pages/Splash';
 
 // Creating Navigation Stack
 const Stack = createNativeStackNavigator();
@@ -81,13 +88,15 @@ const App = () => {
     <>
       <Provider>
         <GestureHandlerRootView style={{flex: 1}}>
-          <NavigationInsider />
+          <PortalProvider>
+            <NavigationInsider />
 
-          <StatusBar
-            animated={true}
-            barStyle={type === 'dark' ? 'light-content' : 'dark-content'}
-            backgroundColor={Theme.PrimaryBackground}
-          />
+            <StatusBar
+              animated={true}
+              barStyle={type === 'dark' ? 'light-content' : 'dark-content'}
+              backgroundColor={Theme.PrimaryBackground}
+            />
+          </PortalProvider>
         </GestureHandlerRootView>
       </Provider>
     </>
@@ -97,53 +106,60 @@ const App = () => {
 const NavigationInsider = () => {
   const {Theme, type} = useContext(ThemeContext);
 
-  const {state} = useContext(AuthContext);
+  const {state, isAuthLoading} = useContext(AuthContext);
+
+  if (isAuthLoading) {
+    return <Splash />;
+  }
 
   return (
-    <NavigationContainer theme={type === 'dark' ? Dark : Light}>
-      <Stack.Navigator
-        screenOptions={{
-          headerShown: false,
-        }}
-        initialRouteName="BottomNav">
-        {state.isLoggedIn && state.token ? (
-          <>
-            {!state.username ? (
-              <Stack.Screen name="Username" component={Username} />
-            ) : (
-              <>
-                <Stack.Screen name="BottomNav" component={BottomNav} />
-                <Stack.Screen
-                  name="ReadingPage"
-                  component={ReadingPage}
-                  options={{
-                    animation: 'slide_from_right',
-                    headerShown: true,
-                    headerTintColor: Theme.PrimaryText,
-                    headerBackground: () => (
-                      <View
-                        style={{
-                          backgroundColor: Theme.PrimaryBackground,
-                          flex: 1,
-                        }}
-                      />
-                    ),
-                    headerTitle: '',
-                  }}
-                />
-                <Stack.Screen
-                  name="EditorNav"
-                  component={EditorNav}
-                  options={{animation: 'slide_from_bottom'}}
-                />
-              </>
-            )}
-          </>
-        ) : (
-          <Stack.Screen name="Login" component={Login} />
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
+    <>
+      <NavigationContainer theme={type === 'dark' ? Dark : Light}>
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false,
+          }}
+          initialRouteName="BottomNav">
+          {state.isLoggedIn && state.token ? (
+            <>
+              {!state.username ? (
+                <Stack.Screen name="Username" component={Username} />
+              ) : (
+                <>
+                  <Stack.Screen name="BottomNav" component={BottomNav} />
+                  <Stack.Screen
+                    name="ReadingPage"
+                    component={ReadingPage}
+                    options={{
+                      animation: 'slide_from_right',
+                      headerShown: true,
+                      headerTintColor: Theme.PrimaryText,
+                      headerBackground: () => (
+                        <View
+                          style={{
+                            backgroundColor: Theme.PrimaryBackground,
+                            flex: 1,
+                          }}
+                        />
+                      ),
+                      headerTitle: '',
+                    }}
+                  />
+                  <Stack.Screen
+                    name="EditorNav"
+                    component={EditorNav}
+                    options={{animation: 'slide_from_bottom'}}
+                  />
+                </>
+              )}
+            </>
+          ) : (
+            <Stack.Screen name="Login" component={Login} />
+          )}
+        </Stack.Navigator>
+      </NavigationContainer>
+      <Toast position="bottom" />
+    </>
   );
 };
 
