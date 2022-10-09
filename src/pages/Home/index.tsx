@@ -4,13 +4,26 @@ import {
   FlatList,
   StyleSheet,
   ActivityIndicator,
+  Keyboard,
 } from 'react-native';
 import {emitter} from '../../NavPages/BottomNav';
-import React, {useEffect, useContext, useState, useRef} from 'react';
+import React, {
+  useEffect,
+  useContext,
+  useState,
+  useRef,
+  useMemo,
+  useCallback,
+} from 'react';
 import axios from 'axios';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import BottomSheet from '@gorhom/bottom-sheet';
+import Toast from 'react-native-toast-message';
+
+// Portal
+import {Portal} from '@gorhom/portal';
 
 import AuthContext from '../../contexts/AuthContext';
+import ListContext from '../../contexts/ListContext';
 
 import CONSTANTS from '../../../CONSTANTS';
 
@@ -22,6 +35,13 @@ import HeaderHome from '../../components/HeaderHome';
 // Article Item
 import ArticleItem from '../../components/ArticleItem';
 import {Spacing} from '../../../theme';
+
+// Event emitter
+import ArticleEmitter from '../../EventEmitters/ArticleEmitter';
+
+// BottomSheets
+import ReadingListBottomSheet1 from '../../components/ReadingListBottomSheet1';
+import ReadingListBottomSheet2 from '../../components/ReadingListBottomSheet2';
 
 // Dummy Data
 // const data = [
@@ -116,15 +136,24 @@ type Item = {
   commentCount: number;
   ownerUsername: string;
   isFollowedByYou: boolean;
+  isAddedToList: boolean;
 };
 
-const renderHomeFeed = ({item}: {item: Item}) => {
-  return <ArticleItem data={item} />;
+type List = {
+  id: string;
+  listName: string;
+  noOfStories: number;
+  thumb: null | string;
 };
 
 const Home = ({navigation}: {navigation: any}) => {
   const {Theme, type} = useContext(ThemeContext);
-  const {state} = useContext(AuthContext);
+  const {state, logout} = useContext(AuthContext);
+
+  // Data for reading list 1
+  const [allLists, setAllLists] = useState<List[]>([]);
+  // const {storyId: id, changeId} = useContext(ListContext);
+  // const [id, setId] = useState('');
 
   const [data, setData] = useState<Item[]>([]);
 
@@ -136,6 +165,20 @@ const Home = ({navigation}: {navigation: any}) => {
 
   const homeFlatListRef = useRef<FlatList | null>(null);
 
+  // BottomSheet (reading list)
+  const addBottomSheetRef = useRef<BottomSheet>(null);
+  const createBottomSheetRef = useRef<BottomSheet>(null);
+  const snapPoints = useMemo(() => ['50%'], []);
+
+  const renderHomeFeed = useCallback(({item}: {item: Item}) => {
+    return (
+      <ArticleItem
+        data={item}
+        onAddToReadingList={id => addToReadingList(id)}
+      />
+    );
+  }, []);
+
   // Load Stories
   const loadFeed = async (reset: boolean = false) => {
     try {
@@ -146,6 +189,7 @@ const Home = ({navigation}: {navigation: any}) => {
       });
 
       const resData = res.data;
+
       if (resData.success) {
         if (reset) {
           setData(resData.feed);
@@ -172,8 +216,155 @@ const Home = ({navigation}: {navigation: any}) => {
     }
   };
 
+  const openBottomSheet = useCallback(() => {
+    createBottomSheetRef.current?.close();
+    addBottomSheetRef.current?.snapToIndex(0);
+    console.log('openBottomSheet function ran');
+  }, []);
+
+  const openBottomSheet2 = useCallback(() => {
+    addBottomSheetRef.current?.close();
+    createBottomSheetRef.current?.snapToIndex(0);
+    console.log('openBottomSheet2 function ran');
+  }, []);
+
+  const addToReadingList = async (storyId: string) => {
+    // changeId(id);
+    // changeId(storyId);
+    // setId(storyId);
+    openBottomSheet();
+    console.log('addToReadingList function ran');
+  };
+
+  const onNewListCreation = (isCreated: boolean) => {
+    Keyboard.dismiss();
+    openBottomSheet();
+    console.log('onNewListCreation function ran');
+  };
+
+  const loadAllLists = async () => {
+    try {
+      const res = await axios.post(
+        `${CONSTANTS.BACKEND_URI}/get-lists`,
+        {},
+        {
+          headers: {
+            Authorization: state.token as string,
+          },
+        },
+      );
+
+      const resData = res.data;
+
+      if (resData.success) {
+        setAllLists(resData.data);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const onListSelection = async (listId: string, storyId: string) => {
+    try {
+      console.log('Id at alpha function:', storyId);
+      const isAdded = await addToListOnServer(listId, storyId);
+      console.log('isAdded', isAdded);
+      if (isAdded) {
+        // let newData = data;
+        // const index = newData.findIndex(
+        //   val => val.id.toString() === id,
+        // );
+        // let oldValueOfElement = newData[index];
+        // console.log('before', oldValueOfElement);
+        // oldValueOfElement.isAddedToList = true;
+        // console.log('after', oldValueOfElement);
+        // newData[index] = oldValueOfElement;
+
+        setData(oldData => {
+          return oldData.map(item => {
+            if (item.id.toString() !== storyId) {
+              return item;
+            }
+
+            return {...item, isAddedToList: true};
+          });
+        });
+
+        // for (let i = 0; i < data.length; i++) {
+        //   console.log('in loop');
+        //   let story = data[i];
+        //   if (story.id === id) {
+        //     let a = story;
+        //     a.isAddedToList = isAdded;
+        //     newData.push(a);
+        //   } else {
+        //     newData.push(story);
+        //   }
+        // }
+        // setData(newData);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const addToListOnServer = async (listId: string, id: string) => {
+    console.log('from the request sending function : story Id =', id);
+    try {
+      const res = await axios.post(
+        `${CONSTANTS.BACKEND_URI}/add-story-to-list`,
+        {
+          storyId: id as string,
+          listId,
+        },
+        {
+          headers: {
+            Authorization: state.token as string,
+          },
+        },
+      );
+
+      const resData = res.data;
+
+      if (resData.message) {
+        console.log(resData.message);
+      }
+      if (resData.success) {
+        // To tell articleItem that that item is added to a list and show the bookmark
+        ArticleEmitter.emit('added-to-list', [
+          {
+            storyId: id as string,
+          },
+        ]);
+
+        addBottomSheetRef.current?.close();
+
+        // Show message to the user that the story is added to list
+        Toast.show({
+          type: 'success',
+          text1: `Added to list ${resData.listName}`,
+        });
+
+        return true;
+      }
+
+      return false;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
+    return false;
+  };
+
   // Load Stories
   useEffect(() => {
+    // async function init() {
+    //   try {
+    //     await logout();
+    //   } catch (err) {}
+    // }
+    // init();
+
     const subscribtion = emitter.addListener('home-tab-pressed', () => {
       homeFlatListRef.current?.scrollToOffset({
         animated: true,
@@ -188,58 +379,109 @@ const Home = ({navigation}: {navigation: any}) => {
     };
   }, []);
 
+  // useEffect(() => {
+  //   console.log('Id changed:', id);
+  // }, [id]);
+
   return (
-    <View style={{backgroundColor: Theme.PrimaryBackground, flex: 1}}>
-      <HeaderHome />
-      <FlatList
-        ref={homeFlatListRef}
-        data={data}
-        renderItem={renderHomeFeed}
-        initialNumToRender={4}
-        showsVerticalScrollIndicator={false}
-        ItemSeparatorComponent={() => (
-          <View
-            style={{
-              width: '100%',
-              height: 1,
-              backgroundColor:
-                type === 'dark' ? 'rgb(47,57,63)' : 'rgb(230, 230, 230)',
-              marginVertical: Spacing.Margin.Normal,
-              // marginTop: Spacing.Margin.Large,
-            }}
-          />
-        )}
-        ListFooterComponent={() => (
-          <View
-            style={{
-              width: '100%',
-              height: Spacing.Margin.Large,
-              paddingVertical: Spacing.Padding.Large * 3,
-            }}>
-            <ActivityIndicator
-              color="#4b7bec"
-              animating={isLoading}
-              size={35}
-              // style={{display: isLoading ? 'flex' : 'none'}}
+    <>
+      <View style={{backgroundColor: Theme.PrimaryBackground, flex: 1}}>
+        <HeaderHome />
+        <FlatList
+          ref={homeFlatListRef}
+          data={data}
+          renderItem={renderHomeFeed}
+          initialNumToRender={4}
+          showsVerticalScrollIndicator={false}
+          ItemSeparatorComponent={() => (
+            <View
+              style={{
+                width: '100%',
+                height: 1,
+                backgroundColor:
+                  type === 'dark' ? 'rgb(47,57,63)' : 'rgb(230, 230, 230)',
+                marginVertical: Spacing.Margin.Normal,
+                // marginTop: Spacing.Margin.Large,
+              }}
             />
-          </View>
-        )}
-        ListHeaderComponent={() => (
-          <View style={{width: '100%', height: Spacing.Margin.Large}} />
-        )}
-        refreshing={isRefreshing}
-        onRefresh={() => {
-          setIsRefreshing(true);
-          loadFeed(true);
-        }}
-        keyExtractor={(item, index) => item.id + '-' + index}
-        onEndReached={() => {
-          setIsLoading(true);
-          loadFeed();
-        }}
-        onEndReachedThreshold={1}
-      />
-    </View>
+          )}
+          ListFooterComponent={() => (
+            <View
+              style={{
+                width: '100%',
+                height: Spacing.Margin.Large,
+                paddingVertical: Spacing.Padding.Large * 3,
+              }}>
+              <ActivityIndicator
+                color="#4b7bec"
+                animating={isLoading}
+                size={35}
+                // style={{display: isLoading ? 'flex' : 'none'}}
+              />
+            </View>
+          )}
+          ListHeaderComponent={() => (
+            <View style={{width: '100%', height: Spacing.Margin.Large}} />
+          )}
+          refreshing={isRefreshing}
+          onRefresh={() => {
+            setIsRefreshing(true);
+            loadFeed(true);
+          }}
+          keyExtractor={(item, index) => item.id + '-' + index}
+          onEndReached={() => {
+            setIsLoading(true);
+            loadFeed();
+          }}
+          onEndReachedThreshold={1}
+        />
+      </View>
+
+      <Portal>
+        {/* Normal add to reading list sheet */}
+        <BottomSheet
+          snapPoints={snapPoints}
+          ref={addBottomSheetRef}
+          index={-1}
+          onChange={index => {
+            if (index === 0) {
+              loadAllLists();
+            }
+          }}
+          backgroundStyle={{
+            backgroundColor:
+              type === 'dark' ? 'rgb(10,20,26)' : Theme.PrimaryBackground,
+          }}
+          handleIndicatorStyle={{backgroundColor: Theme.Placeholder}}
+          enablePanDownToClose>
+          {/* <Text style={{color: '#fff'}}>{id}</Text> */}
+          <ReadingListBottomSheet1
+            onCreateNewPress={() => openBottomSheet2()}
+            data={allLists}
+            onListSelection={onListSelection}
+          />
+        </BottomSheet>
+
+        {/* Sheet to crete new list */}
+        <BottomSheet
+          // onClose={openBottomSheet}
+          snapPoints={snapPoints}
+          ref={createBottomSheetRef}
+          index={-1}
+          backgroundStyle={{
+            backgroundColor:
+              type === 'dark' ? 'rgb(10,20,26)' : Theme.PrimaryBackground,
+          }}
+          handleIndicatorStyle={{backgroundColor: Theme.Placeholder}}
+          enablePanDownToClose>
+          {/* <Text style={{color: '#fff'}}>{id}</Text> */}
+          <ReadingListBottomSheet2
+            onCancel={() => openBottomSheet()}
+            onCreate={isCreated => onNewListCreation(isCreated)}
+          />
+        </BottomSheet>
+      </Portal>
+    </>
   );
 };
 

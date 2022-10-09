@@ -1,6 +1,6 @@
 const numberFormatter = (num: number): string => {
   // @ts-ignore
-  if (typeof num !== Number) {
+  if (typeof num !== 'number') {
     return '0';
   }
 

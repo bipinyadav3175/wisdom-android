@@ -29,9 +29,8 @@ import AuthContext from '../../contexts/AuthContext';
 import numberFormatter from '../../utils/numberFormatter';
 
 // Bottom Sheet for comments
-import CommentsBottomSheetInsider from '../../components/CommentsBottomSheetInsider';
+import CommentsNav from '../../NavPages/CommentsNav';
 import BottomSheet from '@gorhom/bottom-sheet';
-import {BottomSheetMethods} from '@gorhom/bottom-sheet/lib/typescript/types';
 
 const storyData = [
   {
@@ -178,7 +177,7 @@ const ReadingPage = ({route}: {route: any}) => {
           setData(resData?.story);
           setIsLiked(resData?.isLiked as boolean);
           setLikes(resData?.story?.likes as number);
-          setIsFollowedByYou(resData?.isFollowedByYou as boolean);
+          setIsFollowedByYou(resData?.story?.isFollowedByYou as boolean);
           setLoading(false);
           return;
         }
@@ -364,7 +363,7 @@ const ReadingPage = ({route}: {route: any}) => {
         handleIndicatorStyle={{backgroundColor: Theme.Placeholder}}
         snapPoints={snapPoints}
         enablePanDownToClose>
-        <CommentsBottomSheetInsider />
+        <CommentsNav storyId={id} />
       </BottomSheet>
     </View>
   );
