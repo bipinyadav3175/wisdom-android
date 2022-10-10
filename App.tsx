@@ -104,13 +104,17 @@ const App = () => {
 };
 
 const NavigationInsider = () => {
-  const {Theme, type} = useContext(ThemeContext);
+  const {Theme, type, setDarkTheme} = useContext(ThemeContext);
 
   const {state, isAuthLoading} = useContext(AuthContext);
 
   if (isAuthLoading) {
     return <Splash />;
   }
+
+  useEffect(() => {
+    setDarkTheme();
+  }, []);
 
   return (
     <>
