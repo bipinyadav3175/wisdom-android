@@ -6,14 +6,7 @@ import {
   Pressable,
   ScrollView,
 } from 'react-native';
-import React, {
-  useEffect,
-  useContext,
-  useState,
-  useRef,
-  useMemo,
-  createRef,
-} from 'react';
+import React, {useEffect, useContext, useState, useRef, useMemo} from 'react';
 import axios from 'axios';
 import KeepAwake from 'react-native-keep-awake';
 

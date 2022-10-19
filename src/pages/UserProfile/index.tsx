@@ -3,9 +3,9 @@ import {
   Text,
   StyleSheet,
   Pressable,
-  FlatList,
   ActivityIndicator,
 } from 'react-native';
+import {FlashList} from '@shopify/flash-list';
 import React, {useContext, useEffect, useState} from 'react';
 import axios from 'axios';
 
@@ -260,9 +260,10 @@ const UserProfile = ({route}: {route: any}) => {
   return (
     <View
       style={[styles.container, {backgroundColor: Theme.PrimaryBackground}]}>
-      <FlatList
+      <FlashList
         data={recent}
         renderItem={renderUserProfileFeed}
+        estimatedItemSize={200}
         ListHeaderComponent={<FlatListHeader data={user as User} />}
         ItemSeparatorComponent={() => (
           <View

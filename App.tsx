@@ -1,14 +1,6 @@
 import React, {useContext, useEffect} from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+import {StatusBar, useColorScheme, View} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';

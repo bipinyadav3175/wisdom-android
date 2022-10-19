@@ -1,7 +1,6 @@
 import {
   View,
   Text,
-  FlatList,
   StyleSheet,
   ActivityIndicator,
   Keyboard,
@@ -18,6 +17,7 @@ import React, {
 import axios from 'axios';
 import BottomSheet from '@gorhom/bottom-sheet';
 import Toast from 'react-native-toast-message';
+import {FlashList} from '@shopify/flash-list';
 
 // Portal
 import {Portal} from '@gorhom/portal';
@@ -163,7 +163,7 @@ const Home = ({navigation}: {navigation: any}) => {
   // Data loading on end reached
   const [isLoading, setIsLoading] = useState(false);
 
-  const homeFlatListRef = useRef<FlatList | null>(null);
+  const homeFlatListRef = useRef<FlashList<Item> | null>(null);
 
   // BottomSheet (reading list)
   const addBottomSheetRef = useRef<BottomSheet>(null);
@@ -387,11 +387,12 @@ const Home = ({navigation}: {navigation: any}) => {
     <>
       <View style={{backgroundColor: Theme.PrimaryBackground, flex: 1}}>
         <HeaderHome />
-        <FlatList
+        <FlashList
           ref={homeFlatListRef}
           data={data}
           renderItem={renderHomeFeed}
-          initialNumToRender={4}
+          estimatedItemSize={200}
+          // initialNumToRender={4}
           showsVerticalScrollIndicator={false}
           ItemSeparatorComponent={() => (
             <View

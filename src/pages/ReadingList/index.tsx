@@ -2,10 +2,10 @@ import {
   View,
   Text,
   StyleSheet,
-  FlatList,
   ListRenderItem,
   FlatListProps,
 } from 'react-native';
+import {FlashList} from '@shopify/flash-list';
 import axios from 'axios';
 import React, {useContext, useEffect, useState} from 'react';
 import {useIsFocused} from '@react-navigation/native';
@@ -106,10 +106,11 @@ const ReadingList = () => {
   return (
     <View
       style={[{backgroundColor: Theme.PrimaryBackground}, styles.container]}>
-      <FlatList
+      <FlashList
         data={data}
         renderItem={renderLists}
         keyExtractor={item => item.id}
+        estimatedItemSize={100}
         onRefresh={loadLists}
         refreshing={isRefreshing}
         ListHeaderComponent={
