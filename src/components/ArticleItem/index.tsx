@@ -51,7 +51,7 @@ const ArticleItem = ({
   showFollowBtn?: boolean;
   self: boolean;
   onStoryDelete?: (id: string) => void;
-  onAddToReadingList: (id: string) => void;
+  onAddToReadingList?: (id: string) => void;
 }) => {
   const {Theme} = useContext(ThemeContext);
   const {state} = useContext(AuthContext);
@@ -63,8 +63,8 @@ const ArticleItem = ({
 
   var aspectRatio;
   var thumbHeight;
+  aspectRatio = useImageAspectRatio(data.thumb as string);
   if (data.thumb) {
-    aspectRatio = useImageAspectRatio(data.thumb as string);
     thumbHeight = calculateHeight(thumbWidth, aspectRatio);
   }
 
@@ -299,7 +299,7 @@ const ArticleItem = ({
               <Pressable
                 onPress={async () => {
                   await changeId(data.id);
-                  onAddToReadingList(data.id);
+                  onAddToReadingList?.(data.id);
                   // setIsAddedToReadingList(isAdded);
                 }}>
                 {isAddedToReadingList ? (

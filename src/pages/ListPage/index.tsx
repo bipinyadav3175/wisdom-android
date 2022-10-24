@@ -1,4 +1,5 @@
-import {View, Text, StyleSheet, Pressable, Image, FlatList} from 'react-native';
+import {View, Text, StyleSheet, Pressable, Image} from 'react-native';
+import {FlashList} from '@shopify/flash-list';
 import React, {useContext, useState, useEffect, useCallback} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
@@ -270,10 +271,11 @@ const ListPage = ({route}: {route: any}) => {
   return (
     <View
       style={[styles.container, {backgroundColor: Theme.PrimaryBackground}]}>
-      <FlatList
+      <FlashList
         data={data.list}
         renderItem={renderAllItems}
         keyExtractor={item => item.id}
+        estimatedItemSize={84}
         ItemSeparatorComponent={() => (
           <View style={{width: '100%', height: Spacing.Margin.Normal}} />
         )}
