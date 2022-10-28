@@ -2,14 +2,14 @@ import {
   View,
   Text,
   Pressable,
-  Image,
+  ImageBackground,
   Dimensions,
   StyleSheet,
   StatusBar,
 } from 'react-native';
 import React, {useContext, useMemo, useEffect} from 'react';
 import axios from 'axios';
-import BottomSheet from '@gorhom/bottom-sheet';
+import LinearGradient from 'react-native-linear-gradient';
 
 import AuthContext from '../../contexts/AuthContext';
 import ThemeContext from '../../contexts/ThemeContext';
@@ -103,10 +103,33 @@ const Login = () => {
   return (
     <>
       <View style={styles.container}>
-        <Image
-          source={require('../../../assets/others/waving-astronaut.png')}
-          style={styles.image}
-        />
+        <ImageBackground
+          source={require('../../../assets/others/landscape.png')}
+          style={styles.image}>
+          <LinearGradient
+            colors={['#FFFFFF00', '#2f0c29']}
+            start={{x: 0.5, y: 0}}
+            end={{x: 0.5, y: 1}}
+            style={styles.gradientBox}>
+            <View style={styles.contentWrapper}>
+              <Text style={[styles.heroLine, {color: Theme.PrimaryText}]}>
+                Explore the world of wisdom
+              </Text>
+              <Text style={[styles.subHeroLine, {color: Theme.SecondaryText}]}>
+                A place to get other's wisdom and share yours too
+              </Text>
+
+              <Pressable
+                style={[styles.signInBtn, {backgroundColor: Theme.PrimaryText}]}
+                onPress={signIn}>
+                <AntDesign name="google" size={24} color="#000" />
+                <Text style={[styles.signInText, {color: '#000'}]}>
+                  Continue with Google
+                </Text>
+              </Pressable>
+            </View>
+          </LinearGradient>
+        </ImageBackground>
       </View>
       <StatusBar
         animated={true}
@@ -115,7 +138,7 @@ const Login = () => {
         translucent
       />
 
-      <BottomSheet
+      {/* <BottomSheet
         snapPoints={snapPoints}
         index={0}
         backgroundStyle={{backgroundColor: Theme.PrimaryBackground}}
@@ -133,7 +156,6 @@ const Login = () => {
             </Text>
           </View>
 
-          {/* <GoogleSigninButton onPress={signIn} style={styles.signInBtn} /> */}
           <Pressable style={styles.signInBtn} onPress={signIn}>
             <AntDesign name="google" size={24} color={Theme.PrimaryText} />
             <Text style={[styles.signInText, {color: Theme.PrimaryText}]}>
@@ -141,7 +163,7 @@ const Login = () => {
             </Text>
           </Pressable>
         </View>
-      </BottomSheet>
+      </BottomSheet> */}
     </>
   );
 };
@@ -151,14 +173,39 @@ export default Login;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '100%',
-    height: '100%',
-    justifyContent: 'flex-start',
+    // width: '100%',
+    // height: '100%',
+    justifyContent: 'flex-end',
     alignItems: 'center',
   },
   image: {
     width: img_width,
     height: img_height,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  gradientBox: {
+    width: '100%',
+    alignItems: 'center',
+    paddingTop: Spacing.Padding.Large * 5,
+  },
+  contentWrapper: {
+    paddingHorizontal: Spacing.Padding.Large * 3,
+    paddingVertical: Spacing.Padding.Large * 2,
+    alignItems: 'center',
+    width: img_width,
+  },
+  heroLine: {
+    fontSize: 45,
+    fontWeight: '700',
+    alignSelf: 'center',
+    textAlign: 'center',
+    marginBottom: Spacing.Margin.Normal,
+  },
+  subHeroLine: {
+    fontSize: 25,
+    fontWeight: '600',
+    textAlign: 'center',
   },
   sheetCont: {
     paddingVertical: Spacing.Padding.Normal,
