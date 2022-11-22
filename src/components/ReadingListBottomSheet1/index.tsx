@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.Padding.Normal,
   },
   heading: {
-    fontFamily: CustomFonts.Ubuntu.Regular,
+    fontFamily: CustomFonts.SSP.Regular,
     fontSize: 19,
     marginBottom: Spacing.Margin.Normal,
     marginTop: Spacing.Margin.Large,
@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
     aspectRatio: 2,
   },
   listName: {
-    fontFamily: CustomFonts.Ubuntu.Regular,
+    fontFamily: CustomFonts.SSP.Regular,
     fontSize: 17,
     maxWidth: '50%',
   },

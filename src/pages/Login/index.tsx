@@ -112,18 +112,24 @@ const Login = () => {
             end={{x: 0.5, y: 1}}
             style={styles.gradientBox}>
             <View style={styles.contentWrapper}>
-              <Text style={[styles.heroLine, {color: Theme.PrimaryText}]}>
+              <Text
+                style={[styles.heroLine, {color: 'rgba(255, 255, 255, 0.9)'}]}>
                 Explore the world of wisdom
               </Text>
-              <Text style={[styles.subHeroLine, {color: Theme.SecondaryText}]}>
+              <Text
+                style={[
+                  styles.subHeroLine,
+                  {color: 'rgba(255, 255, 255, 0.7)'},
+                ]}>
                 A place to get other's wisdom and share yours too
               </Text>
 
               <Pressable
-                style={[styles.signInBtn, {backgroundColor: Theme.PrimaryText}]}
+                android_ripple={{color: 'rgba(0, 0, 0, 0.3)'}}
+                style={[styles.signInBtn, {backgroundColor: Theme.Red}]}
                 onPress={signIn}>
-                <AntDesign name="google" size={24} color="#000" />
-                <Text style={[styles.signInText, {color: '#000'}]}>
+                <AntDesign name="google" size={24} color={Theme.Pure} />
+                <Text style={[styles.signInText, {color: Theme.Pure}]}>
                   Continue with Google
                 </Text>
               </Pressable>
@@ -137,33 +143,6 @@ const Login = () => {
         barStyle={'light-content'}
         translucent
       />
-
-      {/* <BottomSheet
-        snapPoints={snapPoints}
-        index={0}
-        backgroundStyle={{backgroundColor: Theme.PrimaryBackground}}
-        enableOverDrag={false}
-        handleIndicatorStyle={{display: 'none'}}>
-        <View style={styles.sheetCont}>
-          <View style={styles.wrapper}>
-            <Text style={[styles.heroTitle, {color: Theme.PrimaryText}]}>
-              Welcome to the world of wisdom
-            </Text>
-            <Text style={[styles.desc, {color: Theme.SecondaryText}]}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum,
-              nulla est! Consequuntur reprehenderit facilis recusandae
-              voluptatum eaque, iste itaque quod.
-            </Text>
-          </View>
-
-          <Pressable style={styles.signInBtn} onPress={signIn}>
-            <AntDesign name="google" size={24} color={Theme.PrimaryText} />
-            <Text style={[styles.signInText, {color: Theme.PrimaryText}]}>
-              Continue with Google
-            </Text>
-          </Pressable>
-        </View>
-      </BottomSheet> */}
     </>
   );
 };
@@ -197,38 +176,15 @@ const styles = StyleSheet.create({
   },
   heroLine: {
     fontSize: 45,
-    fontWeight: '700',
     alignSelf: 'center',
     textAlign: 'center',
     marginBottom: Spacing.Margin.Normal,
+    fontFamily: CustomFonts.SSP.SemiBold,
   },
   subHeroLine: {
     fontSize: 25,
-    fontWeight: '600',
     textAlign: 'center',
-  },
-  sheetCont: {
-    paddingVertical: Spacing.Padding.Normal,
-    paddingHorizontal: Spacing.Padding.Normal,
-    justifyContent: 'space-between',
-    height: '100%',
-    paddingBottom: Spacing.Padding.Large,
-  },
-  heroTitle: {
-    alignSelf: 'center',
-    fontSize: 29,
-    // fontFamily: CustomFonts.Ubuntu.Bold,
-    textAlign: 'center',
-    paddingHorizontal: Spacing.Padding.Large * 2,
-    fontWeight: '600',
-  },
-  desc: {
-    alignSelf: 'center',
-    fontSize: 18,
-    textAlign: 'center',
-    paddingHorizontal: Spacing.Padding.Large,
-    fontWeight: '400',
-    marginTop: Spacing.Margin.Normal,
+    fontFamily: CustomFonts.SSP.Regular,
   },
   signInBtn: {
     alignSelf: 'center',
@@ -244,6 +200,7 @@ const styles = StyleSheet.create({
   signInText: {
     marginLeft: Spacing.Margin.Normal,
     fontSize: 20,
+    fontFamily: CustomFonts.SSP.SemiBold,
   },
   wrapper: {
     width: '100%',

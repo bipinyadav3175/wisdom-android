@@ -1,4 +1,4 @@
-import {View, Text, useColorScheme} from 'react-native';
+import {useColorScheme} from 'react-native';
 import React, {createContext, useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import STORAGE_KEY from '../utils/storageKeyMap';
@@ -12,6 +12,11 @@ type Theme = {
   Pure?: string | undefined;
   Black?: string | undefined;
   RippleColor: string;
+  Red?: string;
+  Chocolate?: string;
+  Green?: string;
+  LightBlue?: string;
+  LightGray?: string;
 };
 
 type Context = {
@@ -23,7 +28,7 @@ type Context = {
 };
 
 const defaultValue = {
-  Theme: DarkTheme,
+  Theme: LightTheme,
   type: 'dark',
   setLightTheme: () => {},
   setDarkTheme: () => {},
@@ -73,6 +78,7 @@ const ThemeProvider = ({children}: {children: React.ReactNode}) => {
   // Retrive information about the theme from the async storage
   useEffect(() => {
     async function init() {
+      setLightTheme();
       try {
         const prevTheme = await AsyncStorage.getItem(STORAGE_KEY.THEME);
 

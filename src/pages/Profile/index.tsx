@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
   },
   followText: {
-    fontFamily: CustomFonts.Ubuntu.Regular,
+    fontFamily: CustomFonts.SSP.Regular,
     fontSize: 16,
   },
   bioCont: {
@@ -309,7 +309,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   name: {
-    fontFamily: CustomFonts.Ubuntu.Bold,
+    fontFamily: CustomFonts.SSP.Bold,
     fontSize: 15,
     marginRight: Spacing.Margin.Small,
   },
@@ -325,7 +325,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   recent: {
-    fontFamily: CustomFonts.Ubuntu.Medium,
+    fontFamily: CustomFonts.SSP.Regular,
     fontSize: 18,
     marginBottom: 20,
     paddingHorizontal: Spacing.Padding.Normal,

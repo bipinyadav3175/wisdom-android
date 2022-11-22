@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.Padding.Large,
   },
   title: {
-    fontFamily: CustomFonts.Ubuntu.Bold,
+    fontFamily: CustomFonts.SSP.Bold,
     fontSize: 21,
   },
 });

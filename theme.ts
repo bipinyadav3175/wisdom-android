@@ -5,6 +5,12 @@ const LightTheme = {
   PrimaryBackground: 'rgb(250, 250, 250)',
   Pure: '#ffffff',
   RippleColor: 'rgba(0, 0, 0, 0.3)',
+  Red: '#df2935',
+  Chocolate: '#23231a',
+  Green: '#85cb33',
+  LightBlue: '#b7c3f3',
+  LightGray: '#cacfd6',
+  Black: '#000000',
 };
 
 const DarkTheme = {
@@ -17,15 +23,12 @@ const DarkTheme = {
 };
 
 const CustomFonts = {
-  Ubuntu: {
-    Regular: 'Ubuntu Regular',
-    Medium: 'Ubuntu Medium',
-    MediumItalic: 'Ubuntu Medium Italic',
-    RegularItalic: 'Ubuntu Italic',
-    Bold: 'Ubuntu Bold',
-    BoldItalic: 'Ubuntu Bold Italic',
-    Light: 'Ubuntu Light',
-    LightItalic: 'Ubuntu Light Italic',
+  SSP: {
+    Regular: 'SourceSansPro-Regular',
+    Italic: 'SourceSansPro-Italic',
+    Bold: 'SourceSansPro-Bold',
+    SemiBold: 'SourceSansPro-SemiBold',
+    Light: 'SourceSansPro-Light',
   },
 };
 

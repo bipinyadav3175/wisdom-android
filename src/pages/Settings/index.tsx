@@ -26,7 +26,8 @@ const Settings = () => {
   };
 
   return (
-    <KeyboardAwareScrollView style={styles.container}>
+    <KeyboardAwareScrollView
+      style={[styles.container, {backgroundColor: Theme.PrimaryBackground}]}>
       <SettingsProfile />
       {/* Divider */}
       <View

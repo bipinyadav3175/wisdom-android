@@ -104,14 +104,17 @@ const Username = () => {
     <KeyboardAvoidingView style={styles.container}>
       <Pressable onPress={Keyboard.dismiss}>
         <Text style={[{color: Theme.PrimaryText}, styles.title]}>
-          Secure your username
+          Get your {'\n'}Username
+        </Text>
+        <Text style={[styles.subTitle, {color: Theme.SecondaryText}]}>
+          Secure your username before someone else do
         </Text>
 
         <View style={[styles.inputCont, {borderColor: Theme.Placeholder}]}>
           <Text
             style={{
               color: Theme.SecondaryText,
-              fontFamily: CustomFonts.Ubuntu.Medium,
+              fontFamily: CustomFonts.SSP.Regular,
               fontSize: 18,
               marginRight: 10,
             }}>
@@ -157,12 +160,15 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   title: {
-    fontFamily: CustomFonts.Ubuntu.Bold,
-    fontSize: 30,
-    alignSelf: 'center',
-    letterSpacing: 3,
+    fontSize: 40,
+    fontWeight: '700',
     marginTop: 30,
+    marginBottom: 10,
+  },
+  subTitle: {
     marginBottom: 50,
+    fontSize: 22,
+    fontWeight: '600',
   },
   input: {
     flex: 1,
@@ -184,16 +190,17 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 7,
     backgroundColor: '#5f27cd',
-    position: 'absolute',
-    bottom: 25,
-    left: Spacing.Padding.Normal,
+    // position: 'absolute',
+    // bottom: 25,
+    // left: Spacing.Padding.Normal,
     alignSelf: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: Spacing.Padding.Large * 2,
   },
   btnText: {
-    fontFamily: CustomFonts.Ubuntu.Regular,
+    fontFamily: CustomFonts.SSP.Regular,
     fontSize: 20,
     color: '#fff',
   },

@@ -92,6 +92,11 @@
 		<string>Ubuntu Medium Italic.ttf</string>
 		<string>Ubuntu Medium.ttf</string>
 		<string>Ubuntu Regular.ttf</string>
+		<string>SourceSansPro-Bold.ttf</string>
+		<string>SourceSansPro-Italic.ttf</string>
+		<string>SourceSansPro-Light.ttf</string>
+		<string>SourceSansPro-Regular.ttf</string>
+		<string>SourceSansPro-SemiBold.ttf</string>
 	</array>
 </dict>
 </plist>

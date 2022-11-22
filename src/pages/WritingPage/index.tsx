@@ -53,31 +53,33 @@ const WritingPage = () => {
   return (
     <View style={{position: 'relative', flex: 1}}>
       {/* <KeyboardAvoidingView style={{position: 'relative'}}> */}
+      <View style={styles.header}>
+        <Pressable onPress={() => navigation.goBack()}>
+          <AntDesign name="close" size={24} color={Theme.PrimaryText} />
+        </Pressable>
+
+        <Pressable
+          disabled={btnDisabled}
+          style={[
+            styles.publishBtn,
+            {
+              backgroundColor: btnDisabled
+                ? Theme.Placeholder
+                : Theme.Chocolate,
+              opacity: !btnDisabled ? 1 : 0.7,
+            },
+          ]}
+          onPress={() => {
+            update(editorData as EditorContentType, title);
+            // @ts-ignore
+            navigation.navigate('StoryDetails');
+          }}>
+          <Text style={styles.publishText}>Publish</Text>
+        </Pressable>
+      </View>
       <KeyboardAwareScrollView
         style={{backgroundColor: Theme.PrimaryBackground}}
         keyboardShouldPersistTaps="handled">
-        <View style={styles.header}>
-          <Pressable onPress={() => navigation.goBack()}>
-            <AntDesign name="close" size={24} color={Theme.PrimaryText} />
-          </Pressable>
-
-          <Pressable
-            disabled={btnDisabled}
-            style={[
-              styles.publishBtn,
-              {
-                backgroundColor: btnDisabled ? Theme.Placeholder : '#575fcf',
-                opacity: !btnDisabled ? 1 : 0.7,
-              },
-            ]}
-            onPress={() => {
-              update(editorData as EditorContentType, title);
-              // @ts-ignore
-              navigation.navigate('StoryDetails');
-            }}>
-            <Text style={styles.publishText}>Publish</Text>
-          </Pressable>
-        </View>
         <Editor
           action={action}
           editorData={val => setEditorData(val)}
@@ -108,7 +110,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   publishText: {
-    fontFamily: CustomFonts.Ubuntu.Regular,
+    fontFamily: CustomFonts.SSP.Regular,
     fontSize: 18,
     color: '#fff',
   },

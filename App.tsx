@@ -1,6 +1,7 @@
 import React, {useContext, useEffect} from 'react';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StatusBar, useColorScheme, View} from 'react-native';
+import SystemNavigationBar from 'react-native-system-navigation-bar';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
@@ -86,7 +87,8 @@ const App = () => {
             <StatusBar
               animated={true}
               barStyle={type === 'dark' ? 'light-content' : 'dark-content'}
-              backgroundColor={Theme.PrimaryBackground}
+              backgroundColor={'black'}
+              // backgroundColor={Theme.PrimaryBackground}
             />
           </PortalProvider>
         </GestureHandlerRootView>
@@ -96,17 +98,17 @@ const App = () => {
 };
 
 const NavigationInsider = () => {
-  const {Theme, type, setDarkTheme} = useContext(ThemeContext);
+  const {Theme, type} = useContext(ThemeContext);
 
   const {state, isAuthLoading} = useContext(AuthContext);
+
+  useEffect(() => {
+    SystemNavigationBar.setNavigationColor(Theme.PrimaryBackground, 'light');
+  }, []);
 
   if (isAuthLoading) {
     return <Splash />;
   }
-
-  useEffect(() => {
-    setDarkTheme();
-  }, []);
 
   return (
     <>

@@ -53,7 +53,7 @@ const BottomNav = () => {
           tabBarLabel: ({color}) => (
             <Text
               style={{
-                fontFamily: CustomFonts.Ubuntu.Regular,
+                fontFamily: CustomFonts.SSP.Regular,
                 fontSize: 13,
                 color,
               }}>
@@ -77,7 +77,7 @@ const BottomNav = () => {
           tabBarLabel: ({color}) => (
             <Text
               style={{
-                fontFamily: CustomFonts.Ubuntu.Regular,
+                fontFamily: CustomFonts.SSP.Regular,
                 fontSize: 13,
                 color,
               }}>
@@ -97,7 +97,7 @@ const BottomNav = () => {
           tabBarLabel: ({color}) => (
             <Text
               style={{
-                fontFamily: CustomFonts.Ubuntu.Regular,
+                fontFamily: CustomFonts.SSP.Regular,
                 fontSize: 13,
                 color,
               }}>
@@ -116,7 +116,7 @@ const BottomNav = () => {
           tabBarLabel: ({color}) => (
             <Text
               style={{
-                fontFamily: CustomFonts.Ubuntu.Regular,
+                fontFamily: CustomFonts.SSP.Regular,
                 fontSize: 13,
                 color,
               }}>

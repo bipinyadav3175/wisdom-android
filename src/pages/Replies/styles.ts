@@ -13,7 +13,7 @@ export default StyleSheet.create({
     marginRight: Spacing.Margin.Large,
   },
   name: {
-    fontFamily: CustomFonts.Ubuntu.Medium,
+    fontFamily: CustomFonts.SSP.Regular,
     fontSize: 17,
   },
   username: {

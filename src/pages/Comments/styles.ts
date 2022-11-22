@@ -10,7 +10,7 @@ export default StyleSheet.create({
     marginVertical: Spacing.Margin.Normal,
   },
   heading: {
-    fontFamily: CustomFonts.Ubuntu.Medium,
+    fontFamily: CustomFonts.SSP.Regular,
     fontSize: 18,
     alignSelf: 'center',
   },

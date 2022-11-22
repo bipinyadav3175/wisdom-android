@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.Padding.Normal,
   },
   heading: {
-    fontFamily: CustomFonts.Ubuntu.Regular,
+    fontFamily: CustomFonts.SSP.Regular,
     fontSize: 19,
     alignSelf: 'center',
     marginBottom: Spacing.Margin.Normal,

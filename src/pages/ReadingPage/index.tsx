@@ -371,7 +371,7 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.Padding.Normal,
   },
   title: {
-    fontFamily: CustomFonts.Ubuntu.Medium,
+    fontFamily: CustomFonts.SSP.SemiBold,
     fontSize: 22,
     marginBottom: Spacing.Margin.Normal,
     paddingHorizontal: Spacing.Padding.Normal,
@@ -391,7 +391,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.Padding.Normal,
   },
   userName: {
-    fontFamily: CustomFonts.Ubuntu.Medium,
+    fontFamily: CustomFonts.SSP.Regular,
     fontSize: 16,
   },
   bio: {
@@ -403,7 +403,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   followText: {
-    fontFamily: CustomFonts.Ubuntu.Medium,
+    fontFamily: CustomFonts.SSP.Regular,
     fontSize: 18,
     color: '#3498db',
   },

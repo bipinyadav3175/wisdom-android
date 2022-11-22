@@ -18,6 +18,8 @@ import ThemeContext from '../../contexts/ThemeContext';
 import {CustomFonts, Spacing} from '../../../theme';
 //
 import ArticleItem from '../../components/ArticleItem';
+import StatsBox from './components/StatsBox';
+import Details from './components/Details';
 
 // Dummy Data
 const data = [
@@ -122,42 +124,94 @@ const renderUserProfileFeed = ({item}: {item: Item}) => {
 
 // Header for flatlist
 const FlatListHeader = ({data}: {data: User}) => {
-  const {Theme} = useContext(ThemeContext);
+  const [isFollowed, setIsFollowed] = useState(data.isFollowedByYou);
 
-  useEffect(() => {
-    return () => {};
-  }, []);
+  const {Theme} = useContext(ThemeContext);
+  const {state} = useContext(AuthContext);
+
+  const FollowOrUnfollow = async () => {
+    try {
+      const res = await axios.post(
+        `${CONSTANTS.BACKEND_URI}/follow`,
+        {
+          id: data.id as string,
+        },
+        {
+          headers: {
+            Authorization: state.token as string,
+          },
+        },
+      );
+
+      const resData = res.data;
+      if (resData.message) {
+        console.log(resData.message);
+      }
+      if (resData.success) {
+        setIsFollowed(resData?.isFollowedByYou);
+      }
+    } catch (err) {
+      console.log(err);
+      return;
+    }
+  };
 
   return (
     <>
-      <HeaderProfile
-        Theme={Theme}
-        avatar_50={data.avatar_50}
+      <Details
         avatar_200={data.avatar_200}
-        followerCount={data.followerCount}
-        followingCount={data.followingCount}
-        storyViews={data.storyViews}
-        isFollowedByYou={data.isFollowedByYou}
-        userId={data.id}
+        name={data.name}
+        username={data.username}
+        bio={data.bio}
       />
-
-      {/* Name and bio */}
-      <View style={styles.bioCont}>
-        <View style={styles.nameCont}>
-          <Text style={[styles.name, {color: Theme.PrimaryText}]}>
-            {data.name}
+      <View style={{alignSelf: 'center', width: '80%'}}>
+        <StatsBox
+          followers={data.followerCount}
+          following={data.followingCount}
+          storyViews={data.storyViews}
+        />
+        <View style={{width: '100%', height: Spacing.Padding.Large}} />
+        <Pressable
+          onPress={FollowOrUnfollow}
+          style={[
+            {
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingVertical: 6,
+              width: '100%',
+              borderRadius: 3,
+            },
+            {
+              // display: self ? 'none' : 'flex',
+              display: 'flex',
+              backgroundColor: isFollowed ? Theme.PrimaryBackground : Theme.Red,
+              borderColor: isFollowed ? Theme.Placeholder : undefined,
+              borderWidth: isFollowed ? StyleSheet.hairlineWidth : 0,
+            },
+          ]}>
+          <Text
+            style={[
+              {
+                color: isFollowed ? Theme.PrimaryText : '#ffffff',
+                fontFamily: CustomFonts.SSP.Regular,
+                fontSize: 20,
+              },
+            ]}>
+            {isFollowed ? 'Unfollow' : 'Follow'}
           </Text>
-          <Text style={[styles.userName, {color: Theme.SecondaryText}]}>
-            @{data.username}
-          </Text>
-        </View>
-
-        <Text style={[styles.bio, {color: Theme.PrimaryText}]}>{data.bio}</Text>
+        </Pressable>
       </View>
-
-      <Text style={[styles.recent, {color: Theme.PrimaryText}]}>
-        Recent Stories
+      <View style={{width: '100%', height: Spacing.Margin.Large}} />
+      <Text
+        style={{
+          fontFamily: CustomFonts.SSP.SemiBold,
+          fontSize: 24,
+          color: Theme.PrimaryText,
+          paddingHorizontal: Spacing.Padding.Normal,
+        }}>
+        Stories
       </Text>
+      <View style={{width: '100%', height: Spacing.Margin.Large}} />
     </>
   );
 };
@@ -325,7 +379,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   followText: {
-    fontFamily: CustomFonts.Ubuntu.Medium,
+    fontFamily: CustomFonts.SSP.Regular,
     fontSize: 16,
   },
   bioCont: {
@@ -336,7 +390,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   name: {
-    fontFamily: CustomFonts.Ubuntu.Bold,
+    fontFamily: CustomFonts.SSP.Bold,
     fontSize: 15,
     marginRight: Spacing.Margin.Small,
   },
@@ -352,7 +406,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   recent: {
-    fontFamily: CustomFonts.Ubuntu.Medium,
+    fontFamily: CustomFonts.SSP.Regular,
     fontSize: 18,
     marginBottom: 20,
     paddingHorizontal: Spacing.Padding.Normal,

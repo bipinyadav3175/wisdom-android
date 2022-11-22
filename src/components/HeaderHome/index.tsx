@@ -29,7 +29,7 @@ const HeaderHome = () => {
       flexDirection: 'row',
     },
     title: {
-      fontFamily: CustomFonts.Ubuntu.Bold,
+      fontFamily: CustomFonts.SSP.Bold,
       color: Theme.PrimaryText,
       fontSize: 22,
     },
@@ -51,7 +51,7 @@ const HeaderHome = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Home</Text>
-      <View style={styles.rightContainer}>
+      {/* <View style={styles.rightContainer}>
         <Pressable
           style={styles.pressCont}
           onPress={() => navigation.navigate('Explore')}>
@@ -59,7 +59,7 @@ const HeaderHome = () => {
           <Text
             style={{
               marginLeft: 5,
-              fontFamily: CustomFonts.Ubuntu.Regular,
+              fontFamily: CustomFonts.SSP.Regular,
               color: '#fff',
               fontSize: 16,
             }}>
@@ -70,7 +70,7 @@ const HeaderHome = () => {
         <Pressable onPress={() => navigation.navigate('Search')}>
           <AntDesign name="search1" size={24} color={Theme.PrimaryText} />
         </Pressable>
-      </View>
+      </View> */}
     </View>
   );
 };

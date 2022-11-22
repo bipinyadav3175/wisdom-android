@@ -323,7 +323,7 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.Padding.Normal,
   },
   title: {
-    fontFamily: CustomFonts.Ubuntu.Bold,
+    fontFamily: CustomFonts.SSP.Bold,
     fontSize: 22,
     paddingHorizontal: Spacing.Padding.Normal,
     borderWidth: 1,
@@ -340,19 +340,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   tagTitle: {
-    fontFamily: CustomFonts.Ubuntu.Medium,
+    fontFamily: CustomFonts.SSP.Regular,
     fontSize: 16,
     marginBottom: 10,
     marginLeft: Spacing.Margin.Normal,
   },
   titleTitle: {
-    fontFamily: CustomFonts.Ubuntu.Medium,
+    fontFamily: CustomFonts.SSP.Regular,
     fontSize: 16,
     marginBottom: 10,
     marginLeft: Spacing.Margin.Normal,
   },
   catTitle: {
-    fontFamily: CustomFonts.Ubuntu.Medium,
+    fontFamily: CustomFonts.SSP.Regular,
     fontSize: 16,
     marginVertical: 10,
     marginLeft: Spacing.Margin.Normal,
@@ -411,7 +411,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   btnText: {
-    fontFamily: CustomFonts.Ubuntu.Medium,
+    fontFamily: CustomFonts.SSP.Regular,
     fontSize: 20,
     color: '#fff',
   },
