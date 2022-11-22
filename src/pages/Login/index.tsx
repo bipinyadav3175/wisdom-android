@@ -2,14 +2,14 @@ import {
   View,
   Text,
   Pressable,
-  Image,
+  ImageBackground,
   Dimensions,
   StyleSheet,
   StatusBar,
 } from 'react-native';
 import React, {useContext, useMemo, useEffect} from 'react';
 import axios from 'axios';
-import BottomSheet from '@gorhom/bottom-sheet';
+import LinearGradient from 'react-native-linear-gradient';
 
 import AuthContext from '../../contexts/AuthContext';
 import ThemeContext from '../../contexts/ThemeContext';
@@ -103,10 +103,39 @@ const Login = () => {
   return (
     <>
       <View style={styles.container}>
-        <Image
-          source={require('../../../assets/others/waving-astronaut.png')}
-          style={styles.image}
-        />
+        <ImageBackground
+          source={require('../../../assets/others/landscape.png')}
+          style={styles.image}>
+          <LinearGradient
+            colors={['#FFFFFF00', '#2f0c29']}
+            start={{x: 0.5, y: 0}}
+            end={{x: 0.5, y: 1}}
+            style={styles.gradientBox}>
+            <View style={styles.contentWrapper}>
+              <Text
+                style={[styles.heroLine, {color: 'rgba(255, 255, 255, 0.9)'}]}>
+                Explore the world of wisdom
+              </Text>
+              <Text
+                style={[
+                  styles.subHeroLine,
+                  {color: 'rgba(255, 255, 255, 0.7)'},
+                ]}>
+                A place to get other's wisdom and share yours too
+              </Text>
+
+              <Pressable
+                android_ripple={{color: 'rgba(0, 0, 0, 0.3)'}}
+                style={[styles.signInBtn, {backgroundColor: Theme.Red}]}
+                onPress={signIn}>
+                <AntDesign name="google" size={24} color={Theme.Pure} />
+                <Text style={[styles.signInText, {color: Theme.Pure}]}>
+                  Continue with Google
+                </Text>
+              </Pressable>
+            </View>
+          </LinearGradient>
+        </ImageBackground>
       </View>
       <StatusBar
         animated={true}
@@ -114,34 +143,6 @@ const Login = () => {
         barStyle={'light-content'}
         translucent
       />
-
-      <BottomSheet
-        snapPoints={snapPoints}
-        index={0}
-        backgroundStyle={{backgroundColor: Theme.PrimaryBackground}}
-        enableOverDrag={false}
-        handleIndicatorStyle={{display: 'none'}}>
-        <View style={styles.sheetCont}>
-          <View style={styles.wrapper}>
-            <Text style={[styles.heroTitle, {color: Theme.PrimaryText}]}>
-              Welcome to the world of wisdom
-            </Text>
-            <Text style={[styles.desc, {color: Theme.SecondaryText}]}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum,
-              nulla est! Consequuntur reprehenderit facilis recusandae
-              voluptatum eaque, iste itaque quod.
-            </Text>
-          </View>
-
-          {/* <GoogleSigninButton onPress={signIn} style={styles.signInBtn} /> */}
-          <Pressable style={styles.signInBtn} onPress={signIn}>
-            <AntDesign name="google" size={24} color={Theme.PrimaryText} />
-            <Text style={[styles.signInText, {color: Theme.PrimaryText}]}>
-              Continue with Google
-            </Text>
-          </Pressable>
-        </View>
-      </BottomSheet>
     </>
   );
 };
@@ -151,37 +152,39 @@ export default Login;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '100%',
-    height: '100%',
-    justifyContent: 'flex-start',
+    // width: '100%',
+    // height: '100%',
+    justifyContent: 'flex-end',
     alignItems: 'center',
   },
   image: {
     width: img_width,
     height: img_height,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
   },
-  sheetCont: {
-    paddingVertical: Spacing.Padding.Normal,
-    paddingHorizontal: Spacing.Padding.Normal,
-    justifyContent: 'space-between',
-    height: '100%',
-    paddingBottom: Spacing.Padding.Large,
+  gradientBox: {
+    width: '100%',
+    alignItems: 'center',
+    paddingTop: Spacing.Padding.Large * 5,
   },
-  heroTitle: {
+  contentWrapper: {
+    paddingHorizontal: Spacing.Padding.Large * 3,
+    paddingVertical: Spacing.Padding.Large * 2,
+    alignItems: 'center',
+    width: img_width,
+  },
+  heroLine: {
+    fontSize: 45,
     alignSelf: 'center',
-    fontSize: 29,
-    // fontFamily: CustomFonts.Ubuntu.Bold,
     textAlign: 'center',
-    paddingHorizontal: Spacing.Padding.Large * 2,
-    fontWeight: '600',
+    marginBottom: Spacing.Margin.Normal,
+    fontFamily: CustomFonts.SSP.SemiBold,
   },
-  desc: {
-    alignSelf: 'center',
-    fontSize: 18,
+  subHeroLine: {
+    fontSize: 25,
     textAlign: 'center',
-    paddingHorizontal: Spacing.Padding.Large,
-    fontWeight: '400',
-    marginTop: Spacing.Margin.Normal,
+    fontFamily: CustomFonts.SSP.Regular,
   },
   signInBtn: {
     alignSelf: 'center',
@@ -197,6 +200,7 @@ const styles = StyleSheet.create({
   signInText: {
     marginLeft: Spacing.Margin.Normal,
     fontSize: 20,
+    fontFamily: CustomFonts.SSP.SemiBold,
   },
   wrapper: {
     width: '100%',

@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     paddingLeft: Spacing.Padding.Normal,
   },
   name: {
-    fontFamily: CustomFonts.Ubuntu.Medium,
+    fontFamily: CustomFonts.SSP.Regular,
     fontSize: 18,
     marginBottom: Spacing.Margin.Small / 2,
   },

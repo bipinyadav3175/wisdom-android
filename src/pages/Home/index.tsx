@@ -5,6 +5,7 @@ import {
   ActivityIndicator,
   Keyboard,
 } from 'react-native';
+import {FlashList} from '@shopify/flash-list';
 import {emitter} from '../../NavPages/BottomNav';
 import React, {
   useEffect,
@@ -17,7 +18,6 @@ import React, {
 import axios from 'axios';
 import BottomSheet from '@gorhom/bottom-sheet';
 import Toast from 'react-native-toast-message';
-import {FlashList} from '@shopify/flash-list';
 
 // Portal
 import {Portal} from '@gorhom/portal';
@@ -148,7 +148,7 @@ type List = {
 
 const Home = ({navigation}: {navigation: any}) => {
   const {Theme, type} = useContext(ThemeContext);
-  const {state, logout} = useContext(AuthContext);
+  const {state} = useContext(AuthContext);
 
   // Data for reading list 1
   const [allLists, setAllLists] = useState<List[]>([]);
@@ -353,18 +353,10 @@ const Home = ({navigation}: {navigation: any}) => {
       console.log(err);
       return false;
     }
-    return false;
   };
 
   // Load Stories
   useEffect(() => {
-    // async function init() {
-    //   try {
-    //     await logout();
-    //   } catch (err) {}
-    // }
-    // init();
-
     const subscribtion = emitter.addListener('home-tab-pressed', () => {
       homeFlatListRef.current?.scrollToOffset({
         animated: true,

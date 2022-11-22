@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   inputTitle: {
-    fontFamily: CustomFonts.Ubuntu.Regular,
+    fontFamily: CustomFonts.SSP.Regular,
     fontSize: 15,
   },
   input: {
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     marginTop: Spacing.Margin.Large,
   },
   saveText: {
-    fontFamily: CustomFonts.Ubuntu.Medium,
+    fontFamily: CustomFonts.SSP.Regular,
     fontSize: 20,
   },
   tipText: {

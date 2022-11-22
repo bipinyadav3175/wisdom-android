@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import {nanoid} from 'nanoid';
 import React, {useState, useEffect, useContext} from 'react';
-import Clipboard from '@react-native-clipboard/clipboard';
+// import Clipboard from '@react-native-clipboard/clipboard';
 import {launchImageLibrary} from 'react-native-image-picker';
 
 import ThemeContext from '../../contexts/ThemeContext';
@@ -194,7 +194,7 @@ const Editor = ({
         placeholder="Title"
         placeholderTextColor={Theme.Placeholder}
         style={{
-          fontFamily: CustomFonts.Ubuntu.Regular,
+          fontFamily: CustomFonts.SSP.SemiBold,
           fontSize: 22,
           color: Theme.PrimaryText,
           paddingHorizontal: Spacing.Padding.Normal,

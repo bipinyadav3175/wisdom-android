@@ -15,7 +15,7 @@ const Splash = () => {
     <View
       style={[styles.container, {backgroundColor: Theme.PrimaryBackground}]}>
       <Image
-        source={require('../../../assets/logo/logo-dark-png.png')}
+        source={require('../../../assets/logo/logo-png.png')}
         style={styles.logo}
       />
     </View>

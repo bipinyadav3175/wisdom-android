@@ -327,7 +327,7 @@ const styles = StyleSheet.create({
     paddingBottom: Spacing.Padding.Large,
   },
   name: {
-    fontFamily: CustomFonts.Ubuntu.Bold,
+    fontFamily: CustomFonts.SSP.Bold,
     fontSize: 20,
   },
   count: {
@@ -364,7 +364,7 @@ const styles = StyleSheet.create({
     width: '65%',
   },
   title: {
-    fontFamily: CustomFonts.Ubuntu.Medium,
+    fontFamily: CustomFonts.SSP.Regular,
     fontSize: 16,
   },
   authorCont: {
@@ -379,7 +379,7 @@ const styles = StyleSheet.create({
     marginRight: Spacing.Padding.Small,
   },
   authorName: {
-    fontFamily: CustomFonts.Ubuntu.Regular,
+    fontFamily: CustomFonts.SSP.Regular,
     fontSize: 14,
   },
   bottomCont: {

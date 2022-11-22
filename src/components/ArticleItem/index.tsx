@@ -161,7 +161,7 @@ const ArticleItem = ({
       maxWidth: 0.6 * deviceWidth,
     },
     name: {
-      fontFamily: CustomFonts.Ubuntu.Bold,
+      fontFamily: CustomFonts.SSP.SemiBold,
       fontSize: 15,
       color: Theme.PrimaryText,
       marginRight: 10,
@@ -178,13 +178,14 @@ const ArticleItem = ({
       paddingVertical: 2,
       paddingHorizontal: 10,
       borderRadius: 2,
-      borderWidth: StyleSheet.hairlineWidth,
-      borderColor: Theme.Placeholder,
+      borderWidth: isFollowedByYou ? StyleSheet.hairlineWidth : 0,
+      borderColor: isFollowedByYou ? Theme.Placeholder : undefined,
+      backgroundColor: isFollowedByYou ? undefined : Theme.Black,
     },
     followText: {
-      fontFamily: CustomFonts.Ubuntu.Regular,
+      fontFamily: CustomFonts.SSP.Regular,
       fontSize: 15,
-      color: Theme.PrimaryText,
+      color: isFollowedByYou ? Theme.PrimaryText : Theme.LightGray,
     },
     thumbImage: {
       maxHeight: thumbWidth,
@@ -194,7 +195,7 @@ const ArticleItem = ({
     },
     title: {
       width: '100%',
-      fontFamily: CustomFonts.Ubuntu.Medium,
+      fontFamily: CustomFonts.SSP.SemiBold,
       fontSize: 17,
       paddingHorizontal: Spacing.Padding.Normal,
       color: Theme.PrimaryText,
@@ -209,8 +210,9 @@ const ArticleItem = ({
       marginTop: 20,
     },
     statText: {
+      fontFamily: CustomFonts.SSP.Light,
       color: Theme.SecondaryText,
-      fontSize: 11,
+      fontSize: 14,
     },
     bPreview: {
       color: Theme.SecondaryText,
@@ -231,7 +233,7 @@ const ArticleItem = ({
             <Image source={{uri: data.avatar_50}} style={styles.avatar} />
 
             <View style={styles.basicDetailCont}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <View style={{justifyContent: 'center'}}>
                 <Text style={styles.name} numberOfLines={1}>
                   {data.ownerName}
                 </Text>
@@ -240,9 +242,6 @@ const ArticleItem = ({
                   @{data.ownerUsername}
                 </Text>
               </View>
-              <Text style={styles.bio} numberOfLines={1}>
-                {data.shortBio}
-              </Text>
             </View>
           </Pressable>
           <Pressable
@@ -307,24 +306,24 @@ const ArticleItem = ({
                     name="bookmark"
                     size={20}
                     // color={Theme.SecondaryText}
-                    color="#e17055"
+                    color={Theme.Red}
                   />
                 ) : (
                   <Ionicons
                     name="bookmark-outline"
                     size={20}
-                    color={Theme.SecondaryText}
+                    color={Theme.PrimaryText}
                   />
                 )}
               </Pressable>
 
-              <Pressable style={{marginLeft: Spacing.Margin.Normal}}>
+              {/* <Pressable style={{marginLeft: Spacing.Margin.Normal}}>
                 <Entypo
                   name="dots-three-horizontal"
                   size={22}
                   color={Theme.SecondaryText}
                 />
-              </Pressable>
+              </Pressable> */}
             </View>
           </View>
         </Pressable>

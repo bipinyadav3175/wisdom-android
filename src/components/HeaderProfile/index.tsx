@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   heading: {
-    fontFamily: CustomFonts.Ubuntu.Medium,
+    fontFamily: CustomFonts.SSP.Regular,
     fontSize: 14,
   },
   count: {
