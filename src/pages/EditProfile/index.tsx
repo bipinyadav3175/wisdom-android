@@ -27,7 +27,7 @@ type Avatar = {
 };
 
 const EditProfile = () => {
-  const {state} = useContext(AuthContext);
+  const {state, addUser} = useContext(AuthContext);
   const id = state.id;
   const {Theme} = useContext(ThemeContext);
   // States
@@ -71,6 +71,14 @@ const EditProfile = () => {
       setSavedUsername(profile.username);
       setUsername(profile.username);
       setBio(profile.bio);
+
+      await addUser({
+        token: state.token as string,
+        name: profile.name as string,
+        email: state.email as string,
+        id: state.id as string,
+        username: profile.username as string,
+      });
 
       Toast.show({
         type: 'success',

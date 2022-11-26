@@ -25,8 +25,7 @@ const SettingsProfile = () => {
           `${CONSTANTS.BACKEND_URI}/user/${state.id}`,
           {
             params: {
-              avatar_50: true,
-              username: true,
+              avatar_200: true,
             },
             headers: {
               Authorization: state.token as string,
@@ -37,7 +36,7 @@ const SettingsProfile = () => {
         const resData = res.data;
 
         if (resData.success) {
-          setAvatar(resData?.data?.avatar_50);
+          setAvatar(resData?.data?.avatar_200);
         }
       } catch (err) {
         console.log(err);
@@ -48,25 +47,25 @@ const SettingsProfile = () => {
   }, []);
 
   return (
-    <Pressable
-      style={styles.container}
-      android_ripple={{color: Theme.RippleColor}}
-      onPress={() => {
-        // @ts-ignore
-        navigation.navigate('Profile');
-      }}>
-      <View style={styles.wrapper}>
-        <Image
-          source={{uri: avatar ? avatar : 'https://i.pravatar.cc/500'}}
-          style={styles.avatar}
-        />
-        <Text style={[styles.text, {color: Theme.PrimaryText}]}>
-          Your Profile
-        </Text>
-      </View>
+    <View style={styles.container}>
+      <Image source={{uri: avatar}} style={styles.avatar} />
+      <Text style={[styles.name, {color: Theme.PrimaryText}]}>
+        {state.name}
+      </Text>
+      <Text style={[styles.username, {color: Theme.SecondaryText}]}>
+        @{state.username}
+      </Text>
 
-      <Entypo name="chevron-small-right" size={24} color={Theme.PrimaryText} />
-    </Pressable>
+      <Pressable
+        style={[styles.btn, {backgroundColor: Theme.Chocolate}]}
+        onPress={() => {
+          // @ts-ignore
+          navigation.navigate('EditProfile');
+        }}>
+        <Text style={[styles.btnText, {color: Theme.Pure}]}>Edit Profile</Text>
+        <Entypo name="chevron-small-right" color={Theme.Pure} size={26} />
+      </Pressable>
+    </View>
   );
 };
 
@@ -77,8 +76,6 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: Spacing.Padding.Large,
     paddingVertical: Spacing.Padding.Normal,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
   },
   wrapper: {
@@ -87,12 +84,33 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   avatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 50,
-    marginRight: Spacing.Margin.Large,
+    width: 100,
+    height: 100,
+    borderRadius: 100,
+    marginBottom: Spacing.Margin.Normal,
   },
   text: {
+    fontFamily: CustomFonts.SSP.Regular,
+    fontSize: 20,
+  },
+  name: {
+    fontFamily: CustomFonts.SSP.SemiBold,
+    fontSize: 23,
+  },
+  username: {
+    fontFamily: CustomFonts.SSP.Regular,
+    fontSize: 18,
+  },
+  btn: {
+    paddingHorizontal: Spacing.Padding.Large,
+    paddingVertical: 6,
+    borderRadius: 30,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: Spacing.Margin.Normal,
+  },
+  btnText: {
     fontFamily: CustomFonts.SSP.Regular,
     fontSize: 20,
   },
