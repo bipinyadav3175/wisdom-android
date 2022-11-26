@@ -30,14 +30,14 @@ const Settings = () => {
       style={[styles.container, {backgroundColor: Theme.PrimaryBackground}]}>
       <SettingsProfile />
       {/* Divider */}
-      <View
+      {/* <View
         style={{
           width: '100%',
           height: StyleSheet.hairlineWidth,
           backgroundColor: Theme.Placeholder,
           marginVertical: Spacing.Margin.Normal,
         }}
-      />
+      /> */}
 
       <Pressable onPress={signOut}>
         <Text style={[styles.logoutText, {color: Theme.SecondaryText}]}>
