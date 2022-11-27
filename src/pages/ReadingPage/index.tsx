@@ -75,12 +75,20 @@ type StoryData = {
 
 type Story = {
   id: string;
-  ownerId: string;
-  ownerName: string;
-  ownerUsername: string;
-  isFollowedByYou: boolean;
-  avatar_50: string;
-  avatar_200: string;
+  owner: {
+    id: string;
+    name: string;
+    username: string;
+    bio: string;
+    avatars: {
+      avatar_50: string;
+      avatar_200: string;
+    };
+  };
+  status: {
+    isFollowedByYou: boolean;
+    isLiked: boolean;
+  };
   title: string;
   dateCreated: number;
   tags: string[];
@@ -109,7 +117,7 @@ const ReadingPage = ({route}: {route: any}) => {
       const res = await axios.post(
         `${CONSTANTS.BACKEND_URI}/follow`,
         {
-          id: data?.ownerId as string,
+          id: data?.owner.id as string,
         },
         {
           headers: {
@@ -205,27 +213,45 @@ const ReadingPage = ({route}: {route: any}) => {
 
         <View style={styles.userInfo}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Image source={{uri: data?.avatar_50}} style={styles.avatar} />
+            <Image
+              source={{uri: data?.owner.avatars.avatar_50}}
+              style={styles.avatar}
+            />
 
-            <View>
+            <View style={{maxWidth: '85%'}}>
               <Text
                 numberOfLines={1}
                 style={[styles.userName, {color: Theme.PrimaryText}]}>
-                {data?.ownerName}
+                {data?.owner.name}
               </Text>
               <Text
                 numberOfLines={1}
                 style={[styles.bio, {color: Theme.SecondaryText}]}>
-                Not working at all
+                {data?.owner.bio}
               </Text>
             </View>
           </View>
 
-          <Pressable onPress={FollowOrUnfollow} style={styles.followBtn}>
-            <Text style={styles.followText}>
-              {isFollowedByYou ? 'Unfollow' : 'Follow'}
-            </Text>
-          </Pressable>
+          <View style={{justifyContent: 'center'}}>
+            <Pressable
+              onPress={FollowOrUnfollow}
+              style={[
+                styles.followBtn,
+                {
+                  backgroundColor: isFollowedByYou
+                    ? Theme.LightGray
+                    : Theme.Red,
+                },
+              ]}>
+              <Text
+                style={[
+                  styles.followText,
+                  {color: isFollowedByYou ? Theme.SecondaryText : Theme.Pure},
+                ]}>
+                {isFollowedByYou ? 'Unfollow' : 'Follow'}
+              </Text>
+            </Pressable>
+          </View>
         </View>
 
         {/* Story Data */}
@@ -235,9 +261,10 @@ const ReadingPage = ({route}: {route: any}) => {
               <Text
                 key={item.itemId}
                 style={{
+                  fontFamily: CustomFonts.SSP.Regular,
                   color:
                     type === 'dark' ? Theme.SecondaryText : Theme.PrimaryText,
-                  fontSize: 18,
+                  fontSize: 23,
                   marginVertical: Spacing.Margin.Normal,
                   paddingHorizontal: Spacing.Padding.Normal,
                 }}>
@@ -297,11 +324,26 @@ const ReadingPage = ({route}: {route: any}) => {
             } • ${numberFormatter(data?.commentCount as number)} comments`}
           </Text>
 
-          <Pressable onPress={FollowOrUnfollow} style={styles.followBtn}>
-            <Text style={[styles.followText]}>
-              {isFollowedByYou ? 'Unfollow' : 'Follow'}
-            </Text>
-          </Pressable>
+          <View style={{justifyContent: 'center'}}>
+            <Pressable
+              onPress={FollowOrUnfollow}
+              style={[
+                styles.followBtn,
+                {
+                  backgroundColor: isFollowedByYou
+                    ? Theme.LightGray
+                    : Theme.Red,
+                },
+              ]}>
+              <Text
+                style={[
+                  styles.followText,
+                  {color: isFollowedByYou ? Theme.SecondaryText : Theme.Pure},
+                ]}>
+                {isFollowedByYou ? 'Unfollow' : 'Follow'}
+              </Text>
+            </Pressable>
+          </View>
         </View>
 
         <View
@@ -372,7 +414,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: CustomFonts.SSP.SemiBold,
-    fontSize: 22,
+    fontSize: 26,
     marginBottom: Spacing.Margin.Normal,
     paddingHorizontal: Spacing.Padding.Normal,
   },
@@ -389,6 +431,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignContent: 'center',
     paddingHorizontal: Spacing.Padding.Normal,
+    maxWidth: '90%',
   },
   userName: {
     fontFamily: CustomFonts.SSP.Regular,
@@ -399,13 +442,16 @@ const styles = StyleSheet.create({
     fontWeight: '200',
   },
   followBtn: {
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: 30,
+    paddingHorizontal: Spacing.Padding.Normal,
+    paddingVertical: 2,
   },
   followText: {
     fontFamily: CustomFonts.SSP.Regular,
     fontSize: 18,
-    color: '#3498db',
   },
   actionsCont: {
     flexDirection: 'row',

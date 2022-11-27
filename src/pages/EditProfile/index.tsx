@@ -1,4 +1,12 @@
-import {View, Text, Pressable, Image, TextInput} from 'react-native';
+import {
+  View,
+  Text,
+  Pressable,
+  Image,
+  TextInput,
+  KeyboardAvoidingView,
+  ScrollView,
+} from 'react-native';
 import React, {
   useEffect,
   useContext,
@@ -257,101 +265,107 @@ const EditProfile = () => {
 
   return (
     <>
-      <KeyboardAwareScrollView
-        keyboardShouldPersistTaps="handled"
-        style={styles.container}
-        contentContainerStyle={{alignItems: 'center', flex: 1}}>
-        <Pressable onPress={chooseAvatar}>
-          <Image source={{uri: avatar}} style={styles.avatar} />
-        </Pressable>
-        <Pressable onPress={chooseAvatar}>
-          <Text style={[styles.change, {color: Theme.SecondaryText}]}>
-            Change avatar
-          </Text>
-        </Pressable>
-
-        <View
-          style={{
-            width: '100%',
-            marginBottom: Spacing.Margin.Large,
-            marginTop: Spacing.Margin.Large,
-          }}>
-          <Text style={[styles.inputTitle, {color: Theme.PrimaryText}]}>
-            Name
-          </Text>
-          <TextInput
-            placeholder="Name"
-            style={[
-              styles.input,
-              {color: Theme.PrimaryText, borderColor: Theme.Placeholder},
-            ]}
-            placeholderTextColor={Theme.Placeholder}
-            value={name}
-            onChangeText={val => setName(val)}
-          />
-        </View>
-
-        <View style={{width: '100%', marginBottom: Spacing.Margin.Large}}>
-          <Text style={[styles.inputTitle, {color: Theme.PrimaryText}]}>
-            Username
-          </Text>
+      <KeyboardAvoidingView style={{flex: 1}}>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          style={styles.container}
+          contentContainerStyle={{alignItems: 'center', flex: 1}}>
+          <Pressable onPress={chooseAvatar}>
+            <Image source={{uri: avatar}} style={styles.avatar} />
+          </Pressable>
+          <Pressable onPress={chooseAvatar}>
+            <Text style={[styles.change, {color: Theme.SecondaryText}]}>
+              Change avatar
+            </Text>
+          </Pressable>
 
           <View
-            style={[
-              styles.input,
-              {
-                borderColor: Theme.Placeholder,
-                flexDirection: 'row',
-                alignItems: 'center',
-              },
-            ]}>
-            <Text
-              style={{fontSize: 18, color: Theme.Placeholder, marginRight: 5}}>
-              @
+            style={{
+              width: '100%',
+              marginBottom: Spacing.Margin.Large,
+              marginTop: Spacing.Margin.Large,
+            }}>
+            <Text style={[styles.inputTitle, {color: Theme.PrimaryText}]}>
+              Name
             </Text>
             <TextInput
-              placeholder="Username"
-              style={{color: Theme.PrimaryText, fontSize: 18, flex: 1}}
+              placeholder="Name"
+              style={[
+                styles.input,
+                {color: Theme.PrimaryText, borderColor: Theme.Placeholder},
+              ]}
               placeholderTextColor={Theme.Placeholder}
-              value={username}
-              onChangeText={val => setUsername(val.trim())}
+              value={name}
+              onChangeText={val => setName(val)}
             />
           </View>
 
-          <Text style={[styles.tipText, {color: Theme.SecondaryText}]}>
-            {tipText}
-          </Text>
-        </View>
+          <View style={{width: '100%', marginBottom: Spacing.Margin.Large}}>
+            <Text style={[styles.inputTitle, {color: Theme.PrimaryText}]}>
+              Username
+            </Text>
 
-        <View style={{width: '100%', marginBottom: Spacing.Margin.Large}}>
-          <Text style={[styles.inputTitle, {color: Theme.PrimaryText}]}>
-            Bio
-          </Text>
-          <TextInput
-            placeholder="Tell more about you"
+            <View
+              style={[
+                styles.input,
+                {
+                  borderColor: Theme.Placeholder,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                },
+              ]}>
+              <Text
+                style={{
+                  fontSize: 18,
+                  color: Theme.Placeholder,
+                  marginRight: 5,
+                }}>
+                @
+              </Text>
+              <TextInput
+                placeholder="Username"
+                style={{color: Theme.PrimaryText, fontSize: 18, flex: 1}}
+                placeholderTextColor={Theme.Placeholder}
+                value={username}
+                onChangeText={val => setUsername(val.trim())}
+              />
+            </View>
+
+            <Text style={[styles.tipText, {color: Theme.SecondaryText}]}>
+              {tipText}
+            </Text>
+          </View>
+
+          <View style={{width: '100%', marginBottom: Spacing.Margin.Large}}>
+            <Text style={[styles.inputTitle, {color: Theme.PrimaryText}]}>
+              Bio
+            </Text>
+            <TextInput
+              placeholder="Tell more about you"
+              style={[
+                styles.input,
+                {color: Theme.PrimaryText, borderColor: Theme.Placeholder},
+              ]}
+              placeholderTextColor={Theme.Placeholder}
+              maxLength={120}
+              multiline
+              value={bio}
+              onChangeText={val => setBio(val)}
+            />
+          </View>
+
+          <Pressable
+            onPress={saveProfile}
+            android_ripple={{color: Theme.RippleColor}}
             style={[
-              styles.input,
-              {color: Theme.PrimaryText, borderColor: Theme.Placeholder},
+              styles.saveBtn,
+              {backgroundColor: !btnEnabled ? Theme.Placeholder : Theme.Green},
             ]}
-            placeholderTextColor={Theme.Placeholder}
-            maxLength={120}
-            multiline
-            value={bio}
-            onChangeText={val => setBio(val)}
-          />
-        </View>
-
-        <Pressable
-          onPress={saveProfile}
-          android_ripple={{color: Theme.RippleColor}}
-          style={[
-            styles.saveBtn,
-            {backgroundColor: !btnEnabled ? Theme.Placeholder : Theme.Green},
-          ]}
-          disabled={!btnEnabled}>
-          <Text style={[styles.saveText, {color: Theme.Black}]}>Save</Text>
-        </Pressable>
-      </KeyboardAwareScrollView>
+            disabled={!btnEnabled}>
+            <Text style={[styles.saveText, {color: Theme.Black}]}>Save</Text>
+          </Pressable>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </>
   );
 };
