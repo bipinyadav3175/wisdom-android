@@ -5,9 +5,10 @@ import {
   TextInput,
   Image,
   Pressable,
+  Dimensions,
 } from 'react-native';
 import {nanoid} from 'nanoid';
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect, useContext, useRef} from 'react';
 // import Clipboard from '@react-native-clipboard/clipboard';
 import {launchImageLibrary} from 'react-native-image-picker';
 
@@ -17,11 +18,20 @@ import {CustomFonts, Spacing} from '../../../theme';
 import Input from './Input';
 //Icons
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {handleMarkup, handleSection, refreshMarkup} from './utils';
+import Heading from './Input/Heading';
 
 type EditorItemType = {
   type: string;
-  markup: [] | null;
   // id: string;
+  markup:
+    | {
+        type: string;
+        start: number;
+        end: number;
+      }[]
+    | null;
   content: string | null;
   url: string | null;
   aspectRatio: number | null;
@@ -37,32 +47,42 @@ type Action = {
 } | null;
 
 const Editor = ({
+  scrollRef,
   action,
   editorData,
   onTitle,
 }: {
+  scrollRef: React.RefObject<KeyboardAwareScrollView>;
   action: Action;
   editorData: (val: EditorContentType) => void;
   onTitle: (val: string) => void;
 }) => {
   const {Theme, type} = useContext(ThemeContext);
 
+  const allRefs = useRef([]);
+
   const [title, setTitle] = useState('');
+  const titleRef = useRef<TextInput>(null);
   const [editorContent, setEditorContent] = useState<EditorContentType>([
     {
       type: 'P',
-      markup: null,
       content: '',
+      markup: [],
       url: null,
       aspectRatio: null,
     },
   ]);
   const [currentFocusedInput, setCurrentFocusedInput] = useState(0);
+  const [forceFocus, setForceFocus] = useState<number | null>(null);
   const [selection, setSelection] = useState({start: 0, end: 0});
 
   useEffect(() => {
     onTitle(title);
   }, [title]);
+
+  useEffect(() => {
+    console.log(allRefs);
+  }, [allRefs.current]);
 
   useEffect(() => {
     editorData(editorContent);
@@ -73,6 +93,8 @@ const Editor = ({
       if (!action) {
         return;
       }
+      console.log('action', action.type);
+      if (action.type !== 'IMAGE') return;
 
       try {
         const result = await launchImageLibrary({mediaType: 'photo'});
@@ -89,8 +111,8 @@ const Editor = ({
           let newEmptyImageIndex: EditorItemType = {
             type: 'IMG',
             aspectRatio: aspectRatio,
-            content: '',
             markup: null,
+            content: null,
             url: imagePath as string,
             imgType,
             imgName,
@@ -125,7 +147,7 @@ const Editor = ({
               type: 'P',
               aspectRatio: null,
               content: '',
-              markup: null,
+              markup: [],
               url: null,
             };
 
@@ -138,7 +160,9 @@ const Editor = ({
 
             if (currentFocusedInput) {
               eContent.splice(currentFocusedInput + 1, 0, newEmptyImageIndex);
-              eContent.splice(currentFocusedInput + 2, 0, newEmptyIndex);
+              if (eContent[currentFocusedInput + 2].type === ('P' || 'H!')) {
+                eContent.splice(currentFocusedInput + 2, 0, newEmptyIndex);
+              }
             } else {
               eContent.push(newEmptyImageIndex);
               eContent.push(newEmptyIndex);
@@ -146,12 +170,44 @@ const Editor = ({
           }
 
           setEditorContent(eContent);
+          scrollRef.current?.scrollToEnd();
         }
       } catch (err) {
         console.log(err);
       }
     }
     init();
+  }, [action]);
+
+  useEffect(() => {
+    if (
+      action?.type === 'BOLD' ||
+      action?.type === 'ITALIC' ||
+      action?.type === 'UNDERLINE'
+    ) {
+      const newDat = handleMarkup(editorContent, {
+        markupType: action.type,
+        selection,
+        focusedIndex: currentFocusedInput,
+      });
+      setEditorContent(newDat);
+    }
+
+    if (action?.type === 'H1') {
+      const {data: newData, addedNew} = handleSection(editorContent, {
+        sectionType: 'H1',
+        focusedInput: currentFocusedInput,
+        selection,
+      });
+
+      if (addedNew) {
+        setForceFocus(currentFocusedInput + 1);
+      } else {
+        setForceFocus(currentFocusedInput);
+      }
+
+      setEditorContent(newData);
+    }
   }, [action]);
 
   // Creating a text input after a image is added
@@ -162,8 +218,7 @@ const Editor = ({
   //       type : "P",
   //       aspectRatio: null,
   //       content: '',
-  //       id: "ddgfhdregrfrghdf",
-  //       key: "gwtefes 3",
+
   //       markup: null,
   //       url: null
   //     }
@@ -187,20 +242,25 @@ const Editor = ({
   return (
     <View style={[styles.container]}>
       <TextInput
+        ref={titleRef}
+        onBlur={() => {
+          setForceFocus(0);
+        }}
         maxLength={120}
         multiline
         value={title}
-        onChangeText={val => setTitle(val)}
+        onChangeText={val => setTitle(val.replace('\n', ''))}
         placeholder="Title"
         placeholderTextColor={Theme.Placeholder}
         style={{
           fontFamily: CustomFonts.SSP.SemiBold,
-          fontSize: 22,
+          fontSize: 26,
           color: Theme.PrimaryText,
           paddingHorizontal: Spacing.Padding.Normal,
         }}
         onSubmitEditing={() => {
           setTitle(title.trimEnd());
+          titleRef.current?.blur();
         }}
       />
 
@@ -208,22 +268,54 @@ const Editor = ({
         if (item.type === 'P') {
           return (
             <Input
+              forceFocus={forceFocus}
               type={type}
               Theme={Theme}
               index={index}
               onChangeText={val => {
                 let eContent = Array.from(editorContent);
-                eContent[index].content = val;
 
+                const diff =
+                  val.length - (editorContent[index].content?.length || 0);
+
+                eContent[index].content = val;
+                // setEditorContent(eContent);
+
+                eContent = refreshMarkup(eContent, {
+                  selection,
+                  focusedIndex: index,
+                  difference: diff,
+                });
                 setEditorContent(eContent);
               }}
               key={'textInput-' + index}
-              value={editorContent[index].content as string}
+              value={editorContent[index]}
               onFocus={() => {
                 setCurrentFocusedInput(index);
               }}
               onSelectionChange={val => {
                 setSelection(val);
+              }}
+              onBackspaceWithNoText={() => {
+                let eContent = Array.from(editorContent);
+                if (
+                  editorContent[index - 1] &&
+                  editorContent[index - 1].type !== 'IMG'
+                ) {
+                  eContent.splice(index, 1);
+                  setForceFocus(index - 1);
+                }
+
+                if (
+                  editorContent[index - 1] &&
+                  editorContent[index - 1].type === 'IMG' &&
+                  editorContent[index + 1]
+                ) {
+                  eContent.splice(index, 1);
+                  setForceFocus(index + 1);
+                }
+
+                setEditorContent(eContent);
               }}
               editorData={editorContent}
               onPressDelete={indexToDelete => {
@@ -231,6 +323,18 @@ const Editor = ({
                   return prev.filter((_, index) => index !== indexToDelete);
                 });
               }}
+              // onDoubleEnter={() => {
+              //   let i = currentFocusedInput;
+
+              //   let eContent = Array.from(editorContent);
+              //   let currentText = eContent[index].content;
+              //   eContent[index].content = currentText?.slice(
+              //     0,
+              //     currentText.length - 1,
+              //   ) as string;
+
+              //   setEditorContent(eContent);
+              // }}
             />
           );
         }
@@ -248,7 +352,11 @@ const Editor = ({
               {/* Image itself */}
               <Image
                 source={{uri: item.url as string}}
-                style={{aspectRatio: item.aspectRatio as number, width: '100%'}}
+                style={{
+                  aspectRatio: item.aspectRatio as number,
+                  width: '100%',
+                  borderRadius: 13,
+                }}
                 resizeMode="contain"
               />
 
@@ -279,11 +387,31 @@ const Editor = ({
                     editorContent[index + 1].type === ('P' || 'H')
                   ) {
                     let afterText = editorContent[index + 1].content;
+                    let afterMarkup = editorContent[index + 1].markup;
+                    let beforeMarkup = editorContent[index - 1].markup;
 
                     let dummyContent = Array.from(editorContent);
 
+                    for (let i = 0; i < afterMarkup?.length; i++) {
+                      const currentStart = afterMarkup[i].start;
+                      const currentEnd = afterMarkup[i].end;
+                      const additionalLength =
+                        dummyContent[index - 1].content?.length + 1;
+
+                      afterMarkup[i] = {
+                        type: afterMarkup[i].type,
+                        start: currentStart + additionalLength,
+                        end: currentEnd + additionalLength,
+                      };
+                    }
+
+                    let totalMarkup = beforeMarkup?.concat(afterMarkup);
+                    totalMarkup?.sort((a, b) => a.start - b.start);
+
                     dummyContent[index - 1].content =
                       dummyContent[index - 1].content + ' ' + afterText;
+
+                    dummyContent[index - 1].markup = totalMarkup;
 
                     dummyContent = dummyContent.filter(
                       (_, afterIndex) => afterIndex !== index + 1,
@@ -299,6 +427,93 @@ const Editor = ({
                 <AntDesign name="close" size={20} color={Theme.SecondaryText} />
               </Pressable>
             </View>
+          );
+        }
+
+        if (item.type === 'H1') {
+          return (
+            <Heading
+              forceFocus={forceFocus}
+              type={type}
+              Theme={Theme}
+              index={index}
+              placeholder="Heading"
+              onChangeText={val => {
+                let eContent = Array.from(editorContent);
+                eContent[index].content = val;
+
+                if (val.length < 2) {
+                  setEditorContent(eContent);
+                  return;
+                }
+
+                let lastCharacter = val[val.length - 1];
+                let secondLastCharacter = val[val.length - 2];
+                if (
+                  lastCharacter.match(/\n/g) &&
+                  secondLastCharacter.match(/\n/g)
+                ) {
+                  // eContent.splice(index + 1, 0, {
+                  //   aspectRatio: null,
+                  //   content: '',
+                  //   markup: [],
+                  //   type: 'P',
+                  //   url: null,
+                  //   imgName: undefined,
+                  //   imgType: undefined,
+                  // });
+                  // // On Double enter
+                  // setForceFocus(index + 1);
+                }
+
+                setEditorContent(eContent);
+              }}
+              key={'textInput-' + index}
+              value={editorContent[index]}
+              onFocus={() => {
+                setCurrentFocusedInput(index);
+              }}
+              onSelectionChange={val => {
+                setSelection(val);
+              }}
+              onEnter={() => {
+                let eContent = Array.from(editorContent);
+                // let c = eContent[index].content;
+                // eContent.splice(index, 1, {
+                //   aspectRatio: null,
+                //   content: c?.replace('\n', '') as string,
+                //   markup: null,
+                //   type: 'H1',
+                //   url: null,
+                //   imgName: undefined,
+                //   imgType: undefined,
+                // });
+
+                eContent.splice(index + 1, 0, {
+                  aspectRatio: null,
+                  content: '',
+                  markup: [],
+                  type: 'P',
+                  url: null,
+                  imgName: undefined,
+                  imgType: undefined,
+                });
+
+                setEditorContent(eContent);
+
+                // On Single Enter
+                setForceFocus(index + 1);
+              }}
+              onBackspaceWithNoText={() => {
+                const {data: newData} = handleSection(editorContent, {
+                  sectionType: 'H1',
+                  focusedInput: currentFocusedInput,
+                  selection,
+                });
+
+                setEditorContent(newData);
+              }}
+            />
           );
         }
       })}

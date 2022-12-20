@@ -53,6 +53,11 @@ const ArticleItem = ({
   onStoryDelete?: (id: string) => void;
   onAddToReadingList?: (id: string) => void;
 }) => {
+  // For flash list issues
+  // Flash list reuses the same components
+  // For reference: https://shopify.github.io/flash-list/docs/recycling
+  const lastItemId = useRef(data.id);
+
   const {Theme} = useContext(ThemeContext);
   const {state} = useContext(AuthContext);
   const {changeId} = useContext(ListContext);
@@ -60,6 +65,16 @@ const ArticleItem = ({
   const [isAddedToReadingList, setIsAddedToReadingList] = useState(
     data.isAddedToList,
   );
+
+  // Flash list anti bug code
+  // For reference: https://shopify.github.io/flash-list/docs/recycling
+  if (data.id !== lastItemId.current) {
+    // Prevents infite loop
+    lastItemId.current = data.id;
+
+    setIsFollowedByYou(data.isFollowedByYou);
+    setIsAddedToReadingList(data.isAddedToList);
+  }
 
   var aspectRatio;
   var thumbHeight;

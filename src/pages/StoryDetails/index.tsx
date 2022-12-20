@@ -33,28 +33,11 @@ const StoryDetails = () => {
   const navigation = useNavigation();
 
   const [storyTitle, setStoryTitle] = useState(title);
-  const [tags, setTags] = useState<string[]>([
-    'hello',
-    'technology',
-    'enter',
-    'amazing',
-    'awesome',
-    'good',
-    'game changer',
-  ]);
+  const [tags, setTags] = useState<string[]>([]);
   const [inputText, setInputText] = useState('');
   const [selectedCat, setSelectedCat] = useState<null | string>(null);
   const [open, setOpen] = useState(false);
-  const [items, setItems] = useState([
-    {
-      label: 'Cat1',
-      value: 'Cat 1',
-    },
-    {
-      label: 'Cat2',
-      value: 'Cat 2',
-    },
-  ]);
+  const [items, setItems] = useState<{value: string; label: string}[]>([]);
 
   const [btnDisabled, setBtnDisabled] = useState(true);
 
@@ -174,6 +157,27 @@ const StoryDetails = () => {
     //   }
     // }
   };
+
+  useEffect(() => {
+    async function init() {
+      try {
+        const res = await axios.get(`${CONSTANTS.BACKEND_URI}/categories`, {
+          headers: {
+            Authorization: user.token as string,
+          },
+        });
+
+        const resData = res.data;
+        if (resData.success) {
+          setItems(resData.categories);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+    init();
+  }, []);
 
   return (
     <KeyboardAvoidingView style={{flex: 1}}>
