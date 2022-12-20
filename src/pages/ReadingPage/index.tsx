@@ -264,7 +264,7 @@ const ReadingPage = ({route}: {route: any}) => {
                   fontFamily: CustomFonts.SSP.Regular,
                   color:
                     type === 'dark' ? Theme.SecondaryText : Theme.PrimaryText,
-                  fontSize: 23,
+                  fontSize: 21,
                   marginVertical: Spacing.Margin.Normal,
                   paddingHorizontal: Spacing.Padding.Normal,
                 }}>

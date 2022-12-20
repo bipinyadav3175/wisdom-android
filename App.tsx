@@ -69,6 +69,14 @@ const App = () => {
   const {Theme, type} = useContext(ThemeContext);
 
   useEffect(() => {
+    SystemNavigationBar.setNavigationColor(
+      Theme.PrimaryBackground,
+      'dark',
+      'both',
+    );
+  }, []);
+
+  useEffect(() => {
     GoogleSignin.configure({
       scopes: ['email', 'profile'],
       webClientId:
@@ -83,13 +91,6 @@ const App = () => {
         <GestureHandlerRootView style={{flex: 1}}>
           <PortalProvider>
             <NavigationInsider />
-
-            <StatusBar
-              animated={true}
-              barStyle={type === 'dark' ? 'light-content' : 'dark-content'}
-              backgroundColor={'black'}
-              // backgroundColor={Theme.PrimaryBackground}
-            />
           </PortalProvider>
         </GestureHandlerRootView>
       </Provider>
@@ -101,10 +102,6 @@ const NavigationInsider = () => {
   const {Theme, type} = useContext(ThemeContext);
 
   const {state, isAuthLoading} = useContext(AuthContext);
-
-  useEffect(() => {
-    SystemNavigationBar.setNavigationColor(Theme.PrimaryBackground, 'light');
-  }, []);
 
   if (isAuthLoading) {
     return <Splash />;
@@ -157,6 +154,13 @@ const NavigationInsider = () => {
         </Stack.Navigator>
       </NavigationContainer>
       <Toast position="bottom" />
+
+      <StatusBar
+        animated={true}
+        barStyle={type === 'dark' ? 'light-content' : 'dark-content'}
+        // backgroundColor={'black'}
+        backgroundColor={Theme.PrimaryBackground}
+      />
     </>
   );
 };

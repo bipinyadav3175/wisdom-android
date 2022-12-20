@@ -7,7 +7,7 @@ import {
   Pressable,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import React, {useState, useContext, useEffect} from 'react';
+import React, {useState, useContext, useEffect, useRef} from 'react';
 import EditorContext from '../../contexts/EditorContext';
 //
 import {useNavigation} from '@react-navigation/native';
@@ -29,6 +29,8 @@ const WritingPage = () => {
   const {update} = useContext(EditorContext);
   const {Theme, type} = useContext(ThemeContext);
   const [action, setAction] = useState<Action>(null);
+
+  const scrollRef = useRef<KeyboardAwareScrollView>(null);
 
   const [editorData, setEditorData] = useState<EditorContentType>();
   const [title, setTitle] = useState('');
@@ -78,9 +80,11 @@ const WritingPage = () => {
         </Pressable>
       </View>
       <KeyboardAwareScrollView
+        ref={scrollRef}
         style={{backgroundColor: Theme.PrimaryBackground}}
         keyboardShouldPersistTaps="handled">
         <Editor
+          scrollRef={scrollRef}
           action={action}
           editorData={val => setEditorData(val)}
           onTitle={val => setTitle(val)}
