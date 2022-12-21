@@ -25,6 +25,10 @@ import numberFormatter from '../../utils/numberFormatter';
 import CommentsNav from '../../NavPages/CommentsNav';
 import BottomSheet from '@gorhom/bottom-sheet';
 
+// Components
+import Paragraph from './Paragraph';
+import Heading from './Heading';
+
 const storyData = [
   {
     type: 'P',
@@ -255,23 +259,21 @@ const ReadingPage = ({route}: {route: any}) => {
         </View>
 
         {/* Story Data */}
-        {data?.data.map(item => {
+        {data?.data.map((item, index) => {
           if (item.type === 'P') {
             return (
-              <Text
-                key={item.itemId}
-                style={{
-                  fontFamily: CustomFonts.SSP.Regular,
-                  color:
-                    type === 'dark' ? Theme.SecondaryText : Theme.PrimaryText,
-                  fontSize: 21,
-                  marginVertical: Spacing.Margin.Normal,
-                  paddingHorizontal: Spacing.Padding.Normal,
-                }}>
-                {item.content}
-              </Text>
+              <Paragraph
+                content={item.content as string}
+                markup={item.markup as []}
+                key={index}
+              />
             );
           }
+
+          if (item.type === 'H1') {
+            return <Heading text={item.content as string} key={index} />;
+          }
+
           if (item.type === 'IMG') {
             return (
               <View
