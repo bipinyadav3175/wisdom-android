@@ -11,6 +11,7 @@ import {AuthProvider} from './AuthContext';
 import {EditorProvider} from './EditorContext';
 import {ThemeProvider} from './ThemeContext';
 import {ListProvider} from './ListContext';
+import {StreakProvider} from './StreakContext';
 
 // Library based
 
@@ -21,8 +22,10 @@ const Provider = ({children}: {children: React.ReactNode}) => {
       <AuthProvider>
         <EditorProvider>
           <ListProvider>
-            {/* From libraries */}
-            {children}
+            <StreakProvider>
+              {/* From libraries */}
+              {children}
+            </StreakProvider>
           </ListProvider>
         </EditorProvider>
       </AuthProvider>

@@ -5,6 +5,7 @@ const STORAGE_KEY = {
   IS_LOGGED_IN: 'isLoggedIn',
   USER: 'user',
   IS_FIRST_OPEN: 'is_first_open',
+  IS_STREAK_COMPLETE_MODAL_SHOWN: 'is_streak_complete_modal_shown',
 };
 
 export default STORAGE_KEY;

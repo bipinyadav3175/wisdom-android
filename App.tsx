@@ -18,6 +18,7 @@ import {PortalProvider} from '@gorhom/portal';
 
 import AuthContext from './src/contexts/AuthContext';
 import ThemeContext from './src/contexts/ThemeContext';
+import StreakContext from './src/contexts/StreakContext';
 
 // Nav Pages needed here
 import BottomNav from './src/NavPages/BottomNav';
@@ -102,6 +103,13 @@ const NavigationInsider = () => {
   const {Theme, type} = useContext(ThemeContext);
 
   const {state, isAuthLoading} = useContext(AuthContext);
+  const Streak = useContext(StreakContext);
+
+  useEffect(() => {
+    if (isAuthLoading) return;
+
+    Streak.getDetails();
+  }, [isAuthLoading]);
 
   if (isAuthLoading) {
     return <Splash />;

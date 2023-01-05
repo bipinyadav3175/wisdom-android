@@ -5,8 +5,10 @@ import {
   Image,
   Pressable,
   ScrollView,
+  AppState,
 } from 'react-native';
 import React, {useEffect, useContext, useState, useRef, useMemo} from 'react';
+import BackgroundTimer from 'react-native-background-timer';
 import axios from 'axios';
 import KeepAwake from 'react-native-keep-awake';
 
@@ -16,6 +18,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import {CustomFonts, Spacing} from '../../../theme';
 import ThemeContext from '../../contexts/ThemeContext';
+import StreakContext from '../../contexts/StreakContext';
 
 import CONSTANTS from '../../../CONSTANTS';
 import AuthContext from '../../contexts/AuthContext';
@@ -112,6 +115,11 @@ const ReadingPage = ({route}: {route: any}) => {
   const [likes, setLikes] = useState(0);
   const [isFollowedByYou, setIsFollowedByYou] = useState(false);
 
+  // Current app state
+  const [appState, setAppState] = useState(AppState.currentState);
+  // Streak
+  const Streak = useContext(StreakContext);
+
   // Bottom Sheet
   const bs = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => [500, '100%'], []);
@@ -166,8 +174,31 @@ const ReadingPage = ({route}: {route: any}) => {
     }
   };
 
+  // useEffect(() => {
+  //   // Start the Streak Timer
+  //   Streak.startTimer();
+  // }, []);
+
   useEffect(() => {
+    // Start the Streak Timer
+    Streak.startTimer();
+
+    // Prevent screen to turn off
     KeepAwake.activate();
+
+    // Identify the current app state
+    const AppStateEvent = AppState.addEventListener('change', nextAppState => {
+      if (appState === 'background' && nextAppState === 'active') {
+        Streak.resumeTimer();
+      }
+      if (appState === 'active' && nextAppState === 'background') {
+        Streak.pauseTimer();
+      }
+
+      setAppState(nextAppState);
+    });
+
+    // Fetch the story
     async function init() {
       try {
         const res = await axios.get(`${CONSTANTS.BACKEND_URI}/story/${id}`, {
@@ -196,7 +227,16 @@ const ReadingPage = ({route}: {route: any}) => {
 
     init();
 
+    const streakInterval = BackgroundTimer.setInterval(() => {
+      console.log('This is running');
+      Streak.increment();
+    }, 1000);
+
     return () => {
+      // Remove / Deactivate all event listeners
+      BackgroundTimer.clearInterval(streakInterval);
+      AppStateEvent.remove();
+      Streak.resetTimer();
       KeepAwake.deactivate();
       setData(undefined);
     };
