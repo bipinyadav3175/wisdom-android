@@ -7,6 +7,7 @@ import Home from '../pages/Home';
 import Search from '../pages/Search';
 import Explore from '../pages/Explore';
 import UserProfile from '../pages/UserProfile';
+import Streak from '../pages/Streak';
 
 import ThemeContext from '../contexts/ThemeContext';
 
@@ -23,6 +24,7 @@ const HomeNav = () => {
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="Search" component={Search} />
       <Stack.Screen name="Explore" component={Explore} />
+      <Stack.Screen name="Streak" component={Streak} />
       <Stack.Screen
         name="UserProfile"
         component={UserProfile}

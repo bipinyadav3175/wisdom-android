@@ -11,6 +11,8 @@ const LightTheme = {
   LightBlue: '#b7c3f3',
   LightGray: '#cacfd6',
   Black: '#000000',
+  LightPurple: '#6F008C',
+  DarkPurple: '#270033',
 };
 
 const DarkTheme = {

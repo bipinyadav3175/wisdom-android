@@ -17,6 +17,8 @@ type Theme = {
   Green?: string;
   LightBlue?: string;
   LightGray?: string;
+  LightPurple?: string;
+  DarkPurple?: string;
 };
 
 type Context = {

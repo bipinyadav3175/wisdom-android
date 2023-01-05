@@ -24,6 +24,7 @@ import {Portal} from '@gorhom/portal';
 
 import AuthContext from '../../contexts/AuthContext';
 import ListContext from '../../contexts/ListContext';
+import StreakContext from '../../contexts/StreakContext';
 
 import CONSTANTS from '../../../CONSTANTS';
 
@@ -39,9 +40,14 @@ import {Spacing} from '../../../theme';
 // Event emitter
 import ArticleEmitter from '../../EventEmitters/ArticleEmitter';
 
+import {useFocusEffect} from '@react-navigation/native';
+
 // BottomSheets
 import ReadingListBottomSheet1 from '../../components/ReadingListBottomSheet1';
 import ReadingListBottomSheet2 from '../../components/ReadingListBottomSheet2';
+
+//Modals
+import StreakComplete from '../../components/Modals/StreakComplete';
 
 // Dummy Data
 // const data = [
@@ -149,6 +155,7 @@ type List = {
 const Home = ({navigation}: {navigation: any}) => {
   const {Theme, type} = useContext(ThemeContext);
   const {state} = useContext(AuthContext);
+  const Streak = useContext(StreakContext);
 
   // Data for reading list 1
   const [allLists, setAllLists] = useState<List[]>([]);
@@ -169,6 +176,10 @@ const Home = ({navigation}: {navigation: any}) => {
   const addBottomSheetRef = useRef<BottomSheet>(null);
   const createBottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ['50%'], []);
+
+  // Streak Modal
+  const [isStreakCompleteModalVisible, setIsStreakCompleteModalVisible] =
+    useState(true);
 
   const renderHomeFeed = useCallback(({item}: {item: Item}) => {
     return (
@@ -355,6 +366,15 @@ const Home = ({navigation}: {navigation: any}) => {
     }
   };
 
+  // Display Streak Complete Modal
+  // When a screen comes into focus useFocusEffect is called
+  // By the mercy of react navigation / native
+  useFocusEffect(
+    useCallback(() => {
+      setIsStreakCompleteModalVisible(Streak.shouldShowCompleteModal);
+    }, [Streak.shouldShowCompleteModal]),
+  );
+
   // Load Stories
   useEffect(() => {
     const subscribtion = emitter.addListener('home-tab-pressed', () => {
@@ -474,6 +494,14 @@ const Home = ({navigation}: {navigation: any}) => {
           />
         </BottomSheet>
       </Portal>
+
+      <StreakComplete
+        visible={isStreakCompleteModalVisible}
+        onContinue={() => {
+          setIsStreakCompleteModalVisible(false);
+          Streak.streakCompleteModalShown();
+        }}
+      />
     </>
   );
 };

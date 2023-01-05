@@ -1,4 +1,4 @@
-import {View, Text, Pressable} from 'react-native';
+import {View, Text, Pressable, StyleSheet} from 'react-native';
 import React, {useContext} from 'react';
 
 import {BottomTabBarProps} from '@react-navigation/bottom-tabs';
@@ -24,6 +24,8 @@ const CustomBottomTab = ({
         alignItems: 'center',
         paddingVertical: Spacing.Padding.Small,
         backgroundColor: Theme.PrimaryBackground,
+        borderTopColor: Theme.LightGray,
+        borderTopWidth: StyleSheet.hairlineWidth,
       }}>
       {state.routes.map((route, index) => {
         const {options} = descriptors[route.key];
