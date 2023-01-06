@@ -175,6 +175,8 @@ const formatDates = (dateObject: {}) => {
         } else if (tommorowsDate !== getTodaysDate()) {
           shouldGreen = false;
           color[i] = '#ff7675';
+        } else {
+          color[i] = '#55efc4';
         }
       }
 

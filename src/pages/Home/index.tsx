@@ -143,6 +143,7 @@ type Item = {
   ownerUsername: string;
   isFollowedByYou: boolean;
   isAddedToList: boolean;
+  bio: string;
 };
 
 type List = {
@@ -410,9 +411,8 @@ const Home = ({navigation}: {navigation: any}) => {
             <View
               style={{
                 width: '100%',
-                height: 1,
-                backgroundColor:
-                  type === 'dark' ? 'rgb(47,57,63)' : 'rgb(230, 230, 230)',
+                height: 5,
+                backgroundColor: 'rgb(207, 212, 219)',
                 marginVertical: Spacing.Margin.Normal,
                 // marginTop: Spacing.Margin.Large,
               }}

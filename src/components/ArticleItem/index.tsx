@@ -7,7 +7,13 @@ import {
   Dimensions,
   ToastAndroid,
 } from 'react-native';
-import React, {useEffect, useContext, useState, useRef, useMemo} from 'react';
+import React, {
+  useEffect,
+  useContext,
+  useState,
+  useRef,
+  useCallback,
+} from 'react';
 import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
 import BottomSheet from '@gorhom/bottom-sheet';
@@ -26,6 +32,7 @@ import {CustomFonts, Spacing} from '../../../theme';
 import useImageAspectRatio from '../../utils/AspectRatio';
 
 import numberFormatter from '../../utils/numberFormatter';
+import timeFormatter from '../../utils/timeFormatter';
 // Types
 import type {Item} from '../../pages/Home';
 import CONSTANTS from '../../../CONSTANTS';
@@ -65,6 +72,7 @@ const ArticleItem = ({
   const [isAddedToReadingList, setIsAddedToReadingList] = useState(
     data.isAddedToList,
   );
+  const [date, setDate] = useState(timeFormatter(data.dateCreated));
 
   // Flash list anti bug code
   // For reference: https://shopify.github.io/flash-list/docs/recycling
@@ -74,7 +82,21 @@ const ArticleItem = ({
 
     setIsFollowedByYou(data.isFollowedByYou);
     setIsAddedToReadingList(data.isAddedToList);
+    setDate(timeFormatter(data.dateCreated));
   }
+
+  // Calculate height for thumb
+  const calculateHeight = useCallback(
+    (width: number, aspectRatio: number) => {
+      const height = width / aspectRatio;
+      const maxHeight = thumbWidth * 1.4;
+      if (height >= maxHeight) {
+        return maxHeight;
+      }
+      return height;
+    },
+    [data.id],
+  );
 
   var aspectRatio;
   var thumbHeight;
@@ -147,95 +169,6 @@ const ArticleItem = ({
     };
   }, []);
 
-  // Styles
-  const styles = StyleSheet.create({
-    container: {
-      width: '100%',
-    },
-    userCont: {
-      width: '100%',
-      paddingHorizontal: Spacing.Padding.Normal,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-    },
-    bioCont: {
-      flexDirection: 'row',
-      justifyContent: 'flex-start',
-      alignItems: 'center',
-    },
-    avatar: {
-      width: 40,
-      height: 40,
-      borderRadius: 40,
-      marginRight: Spacing.Margin.Small,
-      borderWidth: StyleSheet.hairlineWidth,
-      borderColor: '#bdc3c7',
-    },
-    basicDetailCont: {
-      maxWidth: 0.6 * deviceWidth,
-    },
-    name: {
-      fontFamily: CustomFonts.SSP.SemiBold,
-      fontSize: 15,
-      color: Theme.PrimaryText,
-      marginRight: 10,
-    },
-    username: {
-      fontSize: 12,
-      color: Theme.Placeholder,
-    },
-    bio: {
-      fontSize: 11,
-      color: Theme.SecondaryText,
-    },
-    followBtn: {
-      paddingVertical: 2,
-      paddingHorizontal: 10,
-      borderRadius: 2,
-      borderWidth: isFollowedByYou ? StyleSheet.hairlineWidth : 0,
-      borderColor: isFollowedByYou ? Theme.Placeholder : undefined,
-      backgroundColor: isFollowedByYou ? undefined : Theme.Black,
-    },
-    followText: {
-      fontFamily: CustomFonts.SSP.Regular,
-      fontSize: 15,
-      color: isFollowedByYou ? Theme.PrimaryText : Theme.LightGray,
-    },
-    thumbImage: {
-      maxHeight: thumbWidth,
-      marginTop: Spacing.Margin.Small,
-      alignSelf: 'center',
-      borderRadius: 13, // 13 seems better than 5
-    },
-    title: {
-      width: '100%',
-      fontFamily: CustomFonts.SSP.SemiBold,
-      fontSize: 17,
-      paddingHorizontal: Spacing.Padding.Normal,
-      color: Theme.PrimaryText,
-      marginTop: Spacing.Margin.Small,
-    },
-    bottomCont: {
-      width: '100%',
-      paddingHorizontal: Spacing.Padding.Normal,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginTop: 20,
-    },
-    statText: {
-      fontFamily: CustomFonts.SSP.Light,
-      color: Theme.SecondaryText,
-      fontSize: 14,
-    },
-    bPreview: {
-      color: Theme.SecondaryText,
-      fontSize: 15,
-      paddingHorizontal: Spacing.Padding.Normal,
-    },
-  });
-
   return (
     <>
       <View style={styles.container}>
@@ -249,12 +182,25 @@ const ArticleItem = ({
 
             <View style={styles.basicDetailCont}>
               <View style={{justifyContent: 'center'}}>
-                <Text style={styles.name} numberOfLines={1}>
+                <Text
+                  style={[styles.name, {color: Theme.PrimaryText}]}
+                  numberOfLines={1}>
                   {data.ownerName}
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: Theme.SecondaryText,
+                      fontFamily: CustomFonts.SSP.Regular,
+                    }}>
+                    {' '}
+                    • {date} ago
+                  </Text>
                 </Text>
 
-                <Text style={styles.username} numberOfLines={1}>
-                  @{data.ownerUsername}
+                <Text
+                  style={[styles.bio, {color: Theme.SecondaryText}]}
+                  numberOfLines={1}>
+                  {data.bio}
                 </Text>
               </View>
             </View>
@@ -270,7 +216,15 @@ const ArticleItem = ({
               styles.followBtn,
               {display: showFollowBtn ? 'flex' : 'none'},
             ]}>
-            <Text style={styles.followText}>
+            <Text
+              style={[
+                styles.followText,
+                {
+                  color: isFollowedByYou
+                    ? Theme.SecondaryText
+                    : Theme.PrimaryText,
+                },
+              ]}>
               {isFollowedByYou ? 'Unfollow' : 'Follow'}
             </Text>
           </Pressable>
@@ -278,7 +232,9 @@ const ArticleItem = ({
 
         <Pressable
           onPress={() => navigation.navigate('ReadingPage', {id: data.id})}>
-          <Text style={styles.title} numberOfLines={3}>
+          <Text
+            style={[styles.title, {color: Theme.PrimaryText}]}
+            numberOfLines={3}>
             {data.title}
           </Text>
 
@@ -298,13 +254,15 @@ const ArticleItem = ({
               />
             </View>
           ) : (
-            <Text style={styles.bPreview} numberOfLines={5}>
+            <Text
+              style={[styles.bPreview, {color: Theme.SecondaryText}]}
+              numberOfLines={5}>
               {data.bodyPreview}
             </Text>
           )}
 
           <View style={styles.bottomCont}>
-            <Text style={styles.statText}>
+            <Text style={[styles.statText, {color: Theme.SecondaryText}]}>
               {numberFormatter(data.likes)} likes •{' '}
               {numberFormatter(data.commentCount)} comments • {data.timeToRead}{' '}
               min read
@@ -316,20 +274,19 @@ const ArticleItem = ({
                   onAddToReadingList?.(data.id);
                   // setIsAddedToReadingList(isAdded);
                 }}>
-                {isAddedToReadingList ? (
-                  <Ionicons
-                    name="bookmark"
-                    size={20}
-                    // color={Theme.SecondaryText}
-                    color={Theme.Red}
-                  />
-                ) : (
-                  <Ionicons
-                    name="bookmark-outline"
-                    size={20}
-                    color={Theme.PrimaryText}
-                  />
-                )}
+                <Ionicons
+                  name="bookmark"
+                  size={20}
+                  // color={Theme.SecondaryText}
+                  color={Theme.Red}
+                  style={{display: isAddedToReadingList ? 'flex' : 'none'}}
+                />
+                <Ionicons
+                  name="bookmark-outline"
+                  size={20}
+                  color={Theme.SecondaryText}
+                  style={{display: isAddedToReadingList ? 'none' : 'flex'}}
+                />
               </Pressable>
 
               {/* <Pressable style={{marginLeft: Spacing.Margin.Normal}}>
@@ -354,10 +311,81 @@ ArticleItem.defaultProps = {
 
 export default ArticleItem;
 
-const calculateHeight = (width: number, aspectRatio: number) => {
-  const height = width / aspectRatio;
-  if (height >= thumbWidth) {
-    return thumbWidth;
-  }
-  return height;
-};
+// Styles
+const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+  },
+  userCont: {
+    width: '100%',
+    paddingHorizontal: Spacing.Padding.Normal,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    // Test
+    // borderBottomWidth: StyleSheet.hairlineWidth,
+    // borderBottomColor: Theme.LightGray,
+    // paddingBottom: 5,
+  },
+  bioCont: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 40,
+    marginRight: Spacing.Margin.Small,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: '#bdc3c7',
+  },
+  basicDetailCont: {
+    maxWidth: 0.65 * deviceWidth,
+  },
+  name: {
+    fontFamily: CustomFonts.SSP.SemiBold,
+    fontSize: 15,
+    marginRight: 10,
+  },
+  bio: {
+    fontSize: 12,
+  },
+  followBtn: {
+    paddingVertical: 2,
+    paddingHorizontal: 10,
+  },
+  followText: {
+    fontFamily: CustomFonts.SSP.SemiBold,
+    fontSize: 15,
+  },
+  thumbImage: {
+    maxHeight: thumbWidth * 1.4,
+    marginTop: Spacing.Margin.Small,
+    alignSelf: 'center',
+    borderRadius: 13, // 13 seems better than 5
+  },
+  title: {
+    width: '100%',
+    fontFamily: CustomFonts.SSP.SemiBold,
+    fontSize: 17,
+    paddingHorizontal: Spacing.Padding.Normal,
+    marginTop: Spacing.Margin.Small,
+  },
+  bottomCont: {
+    width: '100%',
+    paddingHorizontal: Spacing.Padding.Normal,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  statText: {
+    fontFamily: CustomFonts.SSP.Regular,
+    fontSize: 14,
+  },
+  bPreview: {
+    fontSize: 15,
+    paddingHorizontal: Spacing.Padding.Normal,
+  },
+});
