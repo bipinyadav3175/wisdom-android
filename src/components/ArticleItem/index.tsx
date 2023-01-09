@@ -5,7 +5,6 @@ import {
   Pressable,
   Image,
   Dimensions,
-  ToastAndroid,
 } from 'react-native';
 import React, {
   useEffect,
@@ -17,6 +16,7 @@ import React, {
 import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
 import BottomSheet from '@gorhom/bottom-sheet';
+import Toast from 'react-native-toast-message';
 // Icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -127,10 +127,27 @@ const ArticleItem = ({
       }
       if (resData.success) {
         setIsFollowedByYou(resData?.isFollowedByYou);
+
+        Toast.show({
+          type: 'success',
+          text1: resData?.isFollowedByYou
+            ? 'You started following ' + data.ownerName
+            : 'You unfollowed ' + data.ownerName,
+        });
+        return;
       }
+
+      Toast.show({
+        type: 'info',
+        text1: resData?.message as string,
+      });
     } catch (err) {
       console.log(err);
-      return;
+      Toast.show({
+        type: 'error',
+        text1: 'Unable to follow ' + data.ownerName,
+        text2: 'Please try again',
+      });
     }
   };
 

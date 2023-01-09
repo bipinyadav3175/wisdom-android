@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import React, {useContext, useState, useRef, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
+import Toast from 'react-native-toast-message';
 
 // Icons
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -124,14 +125,26 @@ const StoryDetails = () => {
 
       const resData = await res.json();
 
-      console.log(resData);
-
       if (resData.success) {
         // @ts-ignore
         navigation.navigate('Home');
+        Toast.show({
+          type: 'success',
+          text1: 'Story published successfully',
+        });
+        return;
       }
+      Toast.show({
+        type: 'info',
+        text1: resData?.message as string,
+      });
     } catch (err) {
       console.log(err);
+      Toast.show({
+        type: 'error',
+        text1: 'Unable to publish story',
+        text2: 'Please try again',
+      });
     }
     // else {
     //   // Send to the api endpoint

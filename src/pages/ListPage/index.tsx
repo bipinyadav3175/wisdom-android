@@ -3,6 +3,7 @@ import {FlashList} from '@shopify/flash-list';
 import React, {useContext, useState, useEffect, useCallback} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
+import Toast from 'react-native-toast-message';
 
 import ThemeContext from '../../contexts/ThemeContext';
 import AuthContext from '../../contexts/AuthContext';
@@ -200,9 +201,25 @@ const ListPage = ({route}: {route: any}) => {
 
       if (resData.success) {
         navigation.goBack();
+
+        Toast.show({
+          type: 'success',
+          text1: 'Reading list ' + data.listName + ' deleted',
+        });
+        return;
       }
+
+      Toast.show({
+        type: 'info',
+        text1: resData?.message as string,
+      });
     } catch (err) {
       console.log(err);
+      Toast.show({
+        type: 'error',
+        text1: 'Unable to delete list',
+        text2: 'Please try again',
+      });
     }
   };
 
@@ -232,9 +249,25 @@ const ListPage = ({route}: {route: any}) => {
             ),
           };
         });
+
+        Toast.show({
+          type: 'success',
+          text1: 'Story removed from list ' + data.listName,
+        });
+        return;
       }
+
+      Toast.show({
+        type: 'info',
+        text1: resData?.message as string,
+      });
     } catch (err) {
       console.log(err);
+      Toast.show({
+        type: 'error',
+        text1: 'Unable to remove story from list',
+        text2: 'Please try again',
+      });
     }
   };
 
