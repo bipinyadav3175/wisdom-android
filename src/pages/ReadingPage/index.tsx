@@ -6,10 +6,12 @@ import {
   Pressable,
   ScrollView,
   AppState,
+  Dimensions,
 } from 'react-native';
 import React, {useEffect, useContext, useState, useRef, useMemo} from 'react';
 import BackgroundTimer from 'react-native-background-timer';
 import axios from 'axios';
+import Toast from 'react-native-toast-message';
 import KeepAwake from 'react-native-keep-awake';
 
 // Icons
@@ -31,6 +33,7 @@ import BottomSheet from '@gorhom/bottom-sheet';
 // Components
 import Paragraph from './Paragraph';
 import Heading from './Heading';
+import timeSince from '../../utils/timeFormatter';
 
 const storyData = [
   {
@@ -105,6 +108,8 @@ type Story = {
   data: StoryData[];
 };
 
+const deviceWidth = Dimensions.get('window').width;
+
 const ReadingPage = ({route}: {route: any}) => {
   const {id} = route.params; // For future purpose (it is the id of the clicked story | article)
   const {Theme, type} = useContext(ThemeContext);
@@ -144,10 +149,31 @@ const ReadingPage = ({route}: {route: any}) => {
       }
       if (resData.success) {
         setIsFollowedByYou(resData?.isFollowedByYou);
+
+        Toast.show({
+          type: 'success',
+          text1: resData?.isFollowedByYou
+            ? (('You started following ' + data?.owner.name) as string)
+            : (('You unfollowed ' + data?.owner.name) as string),
+          bottomOffset: 25,
+        });
+        return;
       }
+
+      Toast.show({
+        type: 'info',
+        text1: resData?.message as string,
+        bottomOffset: 25,
+      });
     } catch (err) {
       console.log(err);
-      return;
+
+      Toast.show({
+        type: 'error',
+        text1: ('Unable to follow ' + data?.owner.name) as string,
+        text2: 'Please try again',
+        bottomOffset: 25,
+      });
     }
   };
 
@@ -256,21 +282,34 @@ const ReadingPage = ({route}: {route: any}) => {
         </Text>
 
         <View style={styles.userInfo}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Image
-              source={{uri: data?.owner.avatars.avatar_50}}
-              style={styles.avatar}
-            />
-
-            <View style={{maxWidth: '85%'}}>
+          <Image
+            source={{uri: data?.owner.avatars.avatar_50}}
+            style={styles.avatar}
+          />
+          <View style={styles.basicDetailCont}>
+            <View style={{justifyContent: 'center'}}>
               <Text
-                numberOfLines={1}
-                style={[styles.userName, {color: Theme.PrimaryText}]}>
+                style={[styles.name, {color: Theme.PrimaryText}]}
+                numberOfLines={1}>
                 {data?.owner.name}
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: Theme.SecondaryText,
+                    fontFamily: CustomFonts.SSP.Regular,
+                  }}>
+                  {' '}
+                  •{' '}
+                  {data?.dateCreated
+                    ? timeSince(data?.dateCreated as number)
+                    : ''}{' '}
+                  ago
+                </Text>
               </Text>
+
               <Text
-                numberOfLines={1}
-                style={[styles.bio, {color: Theme.SecondaryText}]}>
+                style={[styles.bio, {color: Theme.SecondaryText}]}
+                numberOfLines={1}>
                 {data?.owner.bio}
               </Text>
             </View>
@@ -479,9 +518,16 @@ const styles = StyleSheet.create({
     fontFamily: CustomFonts.SSP.Regular,
     fontSize: 16,
   },
+  basicDetailCont: {
+    maxWidth: 0.65 * deviceWidth,
+  },
+  name: {
+    fontFamily: CustomFonts.SSP.SemiBold,
+    fontSize: 15,
+    marginRight: 10,
+  },
   bio: {
     fontSize: 12,
-    fontWeight: '200',
   },
   followBtn: {
     flexDirection: 'row',

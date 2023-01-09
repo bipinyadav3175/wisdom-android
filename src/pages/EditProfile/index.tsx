@@ -69,6 +69,10 @@ const EditProfile = () => {
       const resData = res.data;
 
       if (!resData.success) {
+        Toast.show({
+          type: 'info',
+          text1: resData?.message as string,
+        });
         return;
       }
 
@@ -94,6 +98,11 @@ const EditProfile = () => {
       });
     } catch (err) {
       console.log(err);
+      Toast.show({
+        type: 'error',
+        text1: 'Unable to update profile',
+        text2: 'Please try again',
+      });
     }
   };
 
@@ -124,7 +133,7 @@ const EditProfile = () => {
       if (!resData.success) {
         Toast.show({
           type: 'error',
-          text1: 'Unable to update avatar',
+          text1: 'Unable to change avatar',
         });
         return;
       }
@@ -135,10 +144,15 @@ const EditProfile = () => {
 
       Toast.show({
         type: 'success',
-        text1: 'Avatar uploaded',
+        text1: 'Avatar changed',
       });
     } catch (err) {
       console.log(err);
+      Toast.show({
+        type: 'error',
+        text1: 'Unable to change avatar',
+        text2: 'Please try again',
+      });
     }
   };
 

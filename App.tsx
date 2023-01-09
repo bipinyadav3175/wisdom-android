@@ -9,7 +9,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 // Toast message
-import Toast from 'react-native-toast-message';
+import Toast from 'react-native-toast-message/';
 
 // Universal Provider
 import Provider from './src/contexts/Provider';
@@ -39,6 +39,9 @@ const Stack = createNativeStackNavigator();
 
 // Themes
 import {LightTheme, DarkTheme} from './theme';
+
+// Configs
+import toastConfig from './configs/toast_config';
 
 const Light = {
   dark: false,
@@ -161,7 +164,7 @@ const NavigationInsider = () => {
           )}
         </Stack.Navigator>
       </NavigationContainer>
-      <Toast position="bottom" />
+      <Toast position="bottom" config={toastConfig} bottomOffset={55} />
 
       <StatusBar
         animated={true}
