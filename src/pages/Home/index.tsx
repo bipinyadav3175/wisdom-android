@@ -160,6 +160,7 @@ const Home = ({navigation}: {navigation: any}) => {
 
   // Data for reading list 1
   const [allLists, setAllLists] = useState<List[]>([]);
+  const [isloadingLists, setIsLoadingLists] = useState(true);
   // const {storyId: id, changeId} = useContext(ListContext);
   // const [id, setId] = useState('');
 
@@ -270,6 +271,7 @@ const Home = ({navigation}: {navigation: any}) => {
 
       if (resData.success) {
         setAllLists(resData.data);
+        setIsLoadingLists(false);
       }
     } catch (err) {
       console.log(err);
@@ -458,6 +460,7 @@ const Home = ({navigation}: {navigation: any}) => {
           index={-1}
           onChange={index => {
             if (index === 0) {
+              setIsLoadingLists(true);
               loadAllLists();
             }
           }}
@@ -469,6 +472,7 @@ const Home = ({navigation}: {navigation: any}) => {
           enablePanDownToClose>
           {/* <Text style={{color: '#fff'}}>{id}</Text> */}
           <ReadingListBottomSheet1
+            isLoading={isloadingLists}
             onCreateNewPress={() => openBottomSheet2()}
             data={allLists}
             onListSelection={onListSelection}

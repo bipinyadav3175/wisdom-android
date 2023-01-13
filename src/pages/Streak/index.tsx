@@ -172,7 +172,6 @@ const styles = StyleSheet.create({
   box: {
     // width: deviceWidth - Spacing.Margin.Normal,
     borderRadius: 13,
-    height: 100,
     flex: 1,
     padding: Spacing.Padding.Normal,
     paddingVertical: Spacing.Padding.Small,
