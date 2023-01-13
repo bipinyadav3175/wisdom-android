@@ -1,4 +1,11 @@
-import {View, Text, StyleSheet, Pressable, ToastAndroid} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  ToastAndroid,
+  Keyboard,
+} from 'react-native';
 import React, {useContext, useState, useEffect} from 'react';
 import axios from 'axios';
 import {CustomFonts, Spacing} from '../../../theme';
@@ -77,36 +84,44 @@ const ReadingListBottomSheet2 = ({
           style={[
             styles.input,
             {
-              color: Theme.SecondaryText,
-              backgroundColor:
-                type === 'dark' ? 'rgb(37,47,53)' : 'rgb(200, 200, 200)',
+              color: Theme.PrimaryText,
+              // backgroundColor: Theme.LightGray,
+              borderColor: Theme.LightGray,
             },
           ]}
         />
 
         <View style={styles.biCont}>
           <Pressable
-            onPress={onCancel}
+            onPress={() => {
+              onCancel();
+              setText('');
+            }}
             android_ripple={{color: Theme.RippleColor}}
             style={[
               styles.basicBtn,
               styles.outlineBtn,
               {borderColor: Theme.Placeholder},
             ]}>
-            <Text style={[styles.basicBtnText, {color: Theme.Placeholder}]}>
+            <Text style={[styles.basicBtnText, {color: Theme.PrimaryText}]}>
               Cancel
             </Text>
           </Pressable>
 
           <Pressable
-            onPress={createNewList}
+            onPress={() => {
+              createNewList();
+              setText('');
+            }}
             disabled={isBtnDisabled}
             android_ripple={{color: Theme.RippleColor}}
             style={[
               styles.basicBtn,
               styles.filledBtn,
               {
-                backgroundColor: isBtnDisabled ? Theme.Placeholder : '#5f27cd',
+                backgroundColor: isBtnDisabled
+                  ? Theme.LightGray
+                  : Theme.LightBlue,
                 opacity: !isBtnDisabled ? 1 : 0.7,
               },
             ]}>
@@ -137,6 +152,7 @@ const styles = StyleSheet.create({
   input: {
     width: '100%',
     borderRadius: 13,
+    borderWidth: 1,
     fontSize: 16,
     paddingHorizontal: Spacing.Padding.Normal,
     marginVertical: Spacing.Margin.Normal,

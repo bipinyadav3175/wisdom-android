@@ -31,20 +31,20 @@ const StreakComplete = ({visible, onContinue}: ModalProps) => {
   const {Theme} = useContext(ThemeContext);
   const Streak = useContext(StreakContext);
 
-  useEffect(() => {
-    async function init() {
-      try {
-        await SystemNavigationBar.setNavigationColor(
-          Theme.Green as string,
-          'light',
-          'both',
-        );
-      } catch (err) {
-        console.log(err);
-      }
-    }
-    init();
-  }, []);
+  // useEffect(() => {
+  //   async function init() {
+  //     try {
+  //       await SystemNavigationBar.setNavigationColor(
+  //         Theme.Green as string,
+  //         'light',
+  //         'both',
+  //       );
+  //     } catch (err) {
+  //       console.log(err);
+  //     }
+  //   }
+  //   init();
+  // }, []);
 
   return (
     <>

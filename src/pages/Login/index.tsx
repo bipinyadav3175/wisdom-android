@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import React, {useContext, useMemo, useEffect} from 'react';
 import axios from 'axios';
+import CONSTANTS from '../../../CONSTANTS';
 import LinearGradient from 'react-native-linear-gradient';
 
 import AuthContext from '../../contexts/AuthContext';
@@ -31,7 +32,7 @@ const img_width = Dimensions.get('window').width * img_resize_factor;
 const img_height = img_width / img_aspect_ratio;
 
 const Login = () => {
-  const {addUser} = useContext(AuthContext);
+  const {addUser, state} = useContext(AuthContext);
 
   const {Theme} = useContext(ThemeContext);
 
@@ -43,7 +44,7 @@ const Login = () => {
       await GoogleSignin.hasPlayServices();
       const {idToken} = await GoogleSignin.signIn();
       const response = await axios.post(
-        'http://192.168.1.3:5000/google-login',
+        `${CONSTANTS.BACKEND_URI}/google-login`,
         {
           idToken,
         },
@@ -61,6 +62,7 @@ const Login = () => {
         });
       }
     } catch (error) {
+      console.log(error);
       // @ts-ignore
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         // user cancelled the login flow
@@ -127,7 +129,10 @@ const Login = () => {
               <Pressable
                 android_ripple={{color: 'rgba(0, 0, 0, 0.3)'}}
                 style={[styles.signInBtn, {backgroundColor: Theme.Red}]}
-                onPress={signIn}>
+                onPress={() => {
+                  signIn();
+                  console.log(state);
+                }}>
                 <AntDesign name="google" size={24} color={Theme.Pure} />
                 <Text style={[styles.signInText, {color: Theme.Pure}]}>
                   Continue with Google

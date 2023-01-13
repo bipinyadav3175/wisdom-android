@@ -1,6 +1,12 @@
-import {View, Text, StyleSheet, Pressable, Image} from 'react-native';
-import React, {useContext, useCallback, useEffect} from 'react';
-import axios from 'axios';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  Image,
+  ActivityIndicator,
+} from 'react-native';
+import React, {useContext, useCallback, useState, useEffect} from 'react';
 import {BottomSheetFlatList, useBottomSheet} from '@gorhom/bottom-sheet';
 
 // Contexts
@@ -23,6 +29,7 @@ type list = {
 };
 
 const ReadingListBottomSheet1 = ({
+  isLoading,
   onCreateNewPress,
   data,
   onListSelection,
@@ -30,9 +37,10 @@ const ReadingListBottomSheet1 = ({
   onCreateNewPress: () => void;
   data: list[];
   onListSelection: (listId: string, storyId: string) => void;
+  isLoading: boolean;
 }) => {
   const {Theme} = useContext(ThemeContext);
-  const {state} = useContext(AuthContext);
+  const [lists, setLists] = useState(data);
 
   // const data = [
   //   {
@@ -115,22 +123,43 @@ const ReadingListBottomSheet1 = ({
   //   init();
   // }, [animatedIndex.value]);
 
+  useEffect(() => {
+    setLists(data);
+  }, [data]);
+
+  if (isLoading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          width: '100%',
+          height: '100%',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <ActivityIndicator size={24} />
+      </View>
+    );
+  }
+
+  if (data.length == 0) {
+    return (
+      <View style={styles.container}>
+        <Text style={[{color: Theme.PrimaryText}, styles.heading]}>
+          Save to Reading List
+        </Text>
+        <EmptyList onCreateNewPress={onCreateNewPress} />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      {data ? (
-        <NormalList
-          data={data}
-          onCreateNewPress={onCreateNewPress}
-          onListSelection={onListSelection}
-        />
-      ) : (
-        <>
-          <Text style={[{color: Theme.PrimaryText}, styles.heading]}>
-            Save to Reading List
-          </Text>
-          <EmptyList onCreateNewPress={onCreateNewPress} />
-        </>
-      )}
+      <NormalList
+        data={data}
+        onCreateNewPress={onCreateNewPress}
+        onListSelection={onListSelection}
+      />
     </View>
   );
 };
@@ -139,6 +168,7 @@ export default ReadingListBottomSheet1;
 
 const EmptyList = ({onCreateNewPress}: {onCreateNewPress: () => void}) => {
   const {Theme} = useContext(ThemeContext);
+  console.log('IN EMPTY LIST');
   return (
     <View style={styles.emptyCont}>
       <Text style={[styles.emptyHeading, {color: Theme.SecondaryText}]}>
@@ -201,13 +231,13 @@ const NormalList = ({
           />
           <View style={{width: '100%'}}>
             <Text
-              style={[styles.listName, {color: Theme.SecondaryText}]}
+              style={[styles.listName, {color: Theme.PrimaryText}]}
               numberOfLines={2}>
               {item.listName}
             </Text>
 
-            <Text style={[styles.count, {color: Theme.Placeholder}]}>
-              {item.noOfStories} stories
+            <Text style={[styles.count, {color: Theme.SecondaryText}]}>
+              {item.noOfStories} {item.noOfStories === 1 ? 'story' : 'stories'}
             </Text>
           </View>
         </Pressable>
