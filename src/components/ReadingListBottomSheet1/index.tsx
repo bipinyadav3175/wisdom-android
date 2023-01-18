@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.Padding.Normal,
   },
   heading: {
-    fontFamily: CustomFonts.SSP.Regular,
+    fontFamily: CustomFonts.SSP.SemiBold,
     fontSize: 19,
     marginBottom: Spacing.Margin.Normal,
     marginTop: Spacing.Margin.Large,

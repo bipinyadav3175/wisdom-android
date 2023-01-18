@@ -93,11 +93,7 @@ const WritingPage = () => {
         {/* <View style={{width: '100%', height: 200}} /> */}
       </KeyboardAwareScrollView>
       {/* </KeyboardAvoidingView> */}
-      <Toolbar
-        Theme={Theme}
-        type={type}
-        onActionTriggered={val => setAction(val)}
-      />
+      <Toolbar type={type} onActionTriggered={val => setAction(val)} />
     </View>
   );
 };
@@ -115,12 +111,12 @@ const styles = StyleSheet.create({
   },
   publishText: {
     fontFamily: CustomFonts.SSP.Regular,
-    fontSize: 18,
+    fontSize: 19,
     color: '#fff',
   },
   publishBtn: {
     paddingHorizontal: 12,
-    paddingVertical: 3,
+    paddingVertical: 4,
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',

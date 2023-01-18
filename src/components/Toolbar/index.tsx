@@ -49,7 +49,8 @@ const Toolbar = ({
   };
 
   const iconSize = 23;
-  const iconColor = '#1B9CFC';
+  // const iconColor = '#1B9CFC';
+  const iconColor = 'rgba(255, 255, 255, 0.5)';
 
   return (
     <View
@@ -58,37 +59,75 @@ const Toolbar = ({
         {
           borderTopWidth: StyleSheet.hairlineWidth,
           borderTopColor: Theme.Placeholder,
-          backgroundColor:
-            type === 'dark' ? 'rgba(10, 10, 10, 0.9)' : Theme.PrimaryBackground,
+          // backgroundColor:
+          //   type === 'dark' ? 'rgba(10, 10, 10, 0.9)' : Theme.PrimaryBackground,
+          backgroundColor: Theme.Black,
         },
       ]}>
       <View style={[styles.textTools, {borderColor: Theme.LightGray}]}>
-        <Pressable onPress={triggerHeading} style={[styles.iconWrapper]}>
-          <Octicons name="heading" size={iconSize} color={iconColor} />
-        </Pressable>
+        <View style={styles.pressableWrapper}>
+          <Pressable
+            onPress={triggerHeading}
+            android_ripple={{
+              color: 'rgba(255, 255, 255, 0.2)',
+              borderless: true,
+            }}
+            style={[styles.iconWrapper, {paddingHorizontal: 10}]}>
+            <Octicons name="heading" size={iconSize} color={iconColor} />
+          </Pressable>
+        </View>
 
         <View style={{height: '100%', width: Spacing.Margin.Small}} />
 
-        <Pressable onPress={triggerBold} style={[styles.iconWrapper]}>
-          <Feather name="bold" size={iconSize} color={iconColor} />
-        </Pressable>
+        <View style={styles.pressableWrapper}>
+          <Pressable
+            onPress={triggerBold}
+            android_ripple={{
+              color: 'rgba(255, 255, 255, 0.2)',
+              borderless: true,
+            }}
+            style={[styles.iconWrapper]}>
+            <Feather name="bold" size={iconSize} color={iconColor} />
+          </Pressable>
+        </View>
 
         <View style={{height: '100%', width: Spacing.Margin.Small}} />
 
-        <Pressable onPress={triggerItalic} style={[styles.iconWrapper]}>
-          <Feather name="italic" size={iconSize} color={iconColor} />
-        </Pressable>
+        <View style={styles.pressableWrapper}>
+          <Pressable
+            onPress={triggerItalic}
+            android_ripple={{
+              color: 'rgba(255, 255, 255, 0.2)',
+              borderless: true,
+            }}
+            style={[styles.iconWrapper]}>
+            <Feather name="italic" size={iconSize} color={iconColor} />
+          </Pressable>
+        </View>
 
         <View style={{height: '100%', width: Spacing.Margin.Small}} />
 
-        <Pressable onPress={triggerUnderline} style={[styles.iconWrapper]}>
-          <Feather name="underline" size={iconSize} color={iconColor} />
-        </Pressable>
+        <View style={styles.pressableWrapper}>
+          <Pressable
+            onPress={triggerUnderline}
+            android_ripple={{
+              color: 'rgba(255, 255, 255, 0.2)',
+              borderless: true,
+            }}
+            style={[styles.iconWrapper]}>
+            <Feather name="underline" size={iconSize} color={iconColor} />
+          </Pressable>
+        </View>
       </View>
 
-      <Pressable onPress={triggerImageAction} style={[styles.iconWrapper]}>
-        <Ionicons name="ios-image-outline" size={28} color={iconColor} />
-      </Pressable>
+      <View style={styles.pressableWrapper}>
+        <Pressable
+          onPress={triggerImageAction}
+          android_ripple={{color: 'rgba(255, 255, 255, 0.2)', borderless: true}}
+          style={[styles.iconWrapper]}>
+          <Ionicons name="ios-image-outline" size={28} color={iconColor} />
+        </Pressable>
+      </View>
     </View>
   );
 };
@@ -102,7 +141,7 @@ const styles = StyleSheet.create({
     // left: 0,
     width: '100%',
     paddingHorizontal: Spacing.Padding.Normal,
-    paddingVertical: 5,
+    paddingVertical: 3,
     zIndex: 1000,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -117,10 +156,13 @@ const styles = StyleSheet.create({
     // paddingHorizontal: Spacing.Padding.Small,
   },
   iconWrapper: {
-    padding: 2,
-    paddingHorizontal: Spacing.Padding.Small * 1.2,
+    padding: 6,
+    // paddingHorizontal: Spacing.Padding.Small * 1.2,
+  },
+  pressableWrapper: {
+    // borderColor: '#1B9CFC',
+    overflow: 'hidden',
     borderRadius: 50,
-    borderWidth: 1.5,
-    borderColor: '#1B9CFC',
+    // borderWidth: 1.5,
   },
 });

@@ -116,6 +116,7 @@ type Item = {
   avatar_200: string;
   isFollowedByYou: boolean;
   isAddedToList: boolean;
+  bio: string;
 };
 
 const renderUserProfileFeed = ({item}: {item: Item}) => {
@@ -177,9 +178,9 @@ const FlatListHeader = ({data}: {data: User}) => {
             {
               justifyContent: 'center',
               alignItems: 'center',
-              paddingVertical: 6,
+              paddingVertical: 7,
               width: '100%',
-              borderRadius: 3,
+              borderRadius: 100,
             },
             {
               // display: self ? 'none' : 'flex',
@@ -193,7 +194,7 @@ const FlatListHeader = ({data}: {data: User}) => {
             style={[
               {
                 color: isFollowed ? Theme.PrimaryText : '#ffffff',
-                fontFamily: CustomFonts.SSP.Regular,
+                fontFamily: CustomFonts.SSP.SemiBold,
                 fontSize: 20,
               },
             ]}>
@@ -319,16 +320,6 @@ const UserProfile = ({route}: {route: any}) => {
         renderItem={renderUserProfileFeed}
         estimatedItemSize={200}
         ListHeaderComponent={<FlatListHeader data={user as User} />}
-        ItemSeparatorComponent={() => (
-          <View
-            style={{
-              width: '100%',
-              height: 1,
-              backgroundColor: Theme.Placeholder,
-              marginVertical: Spacing.Margin.Large,
-            }}
-          />
-        )}
         ListFooterComponent={() => (
           <View
             style={{
@@ -370,7 +361,7 @@ const styles = StyleSheet.create({
   },
   followBtn: {
     width: '70%',
-    borderRadius: 5,
+    borderRadius: 100,
     backgroundColor: '#9980FA',
     justifyContent: 'center',
     alignItems: 'center',

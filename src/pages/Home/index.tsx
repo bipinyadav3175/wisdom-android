@@ -1,6 +1,6 @@
 import {
   View,
-  Text,
+  StatusBar,
   StyleSheet,
   ActivityIndicator,
   Keyboard,
@@ -16,7 +16,7 @@ import React, {
   useCallback,
 } from 'react';
 import axios from 'axios';
-import BottomSheet from '@gorhom/bottom-sheet';
+import BottomSheet, {BottomSheetBackdrop} from '@gorhom/bottom-sheet';
 import Toast from 'react-native-toast-message';
 
 // Portal
@@ -230,6 +230,7 @@ const Home = ({navigation}: {navigation: any}) => {
   };
 
   const openBottomSheet = useCallback(() => {
+    Keyboard.dismiss();
     createBottomSheetRef.current?.close();
     addBottomSheetRef.current?.snapToIndex(0);
     console.log('openBottomSheet function ran');
@@ -240,6 +241,17 @@ const Home = ({navigation}: {navigation: any}) => {
     createBottomSheetRef.current?.snapToIndex(0);
     console.log('openBottomSheet2 function ran');
   }, []);
+
+  const renderBackdrop = useCallback(
+    props => (
+      <BottomSheetBackdrop
+        {...props}
+        disappearsOnIndex={-1}
+        appearsOnIndex={0}
+      />
+    ),
+    [],
+  );
 
   const addToReadingList = async (storyId: string) => {
     // changeId(id);
@@ -409,17 +421,6 @@ const Home = ({navigation}: {navigation: any}) => {
           estimatedItemSize={200}
           // initialNumToRender={4}
           showsVerticalScrollIndicator={false}
-          ItemSeparatorComponent={() => (
-            <View
-              style={{
-                width: '100%',
-                height: 5,
-                backgroundColor: 'rgb(207, 212, 219)',
-                marginVertical: Spacing.Margin.Normal,
-                // marginTop: Spacing.Margin.Large,
-              }}
-            />
-          )}
           ListFooterComponent={() => (
             <View
               style={{
@@ -434,9 +435,6 @@ const Home = ({navigation}: {navigation: any}) => {
                 // style={{display: isLoading ? 'flex' : 'none'}}
               />
             </View>
-          )}
-          ListHeaderComponent={() => (
-            <View style={{width: '100%', height: Spacing.Margin.Large}} />
           )}
           refreshing={isRefreshing}
           onRefresh={() => {
@@ -468,7 +466,8 @@ const Home = ({navigation}: {navigation: any}) => {
             backgroundColor:
               type === 'dark' ? 'rgb(10,20,26)' : Theme.PrimaryBackground,
           }}
-          handleIndicatorStyle={{backgroundColor: Theme.Placeholder}}
+          handleIndicatorStyle={{backgroundColor: Theme.LightGray}}
+          backdropComponent={renderBackdrop}
           enablePanDownToClose>
           {/* <Text style={{color: '#fff'}}>{id}</Text> */}
           <ReadingListBottomSheet1
@@ -489,7 +488,8 @@ const Home = ({navigation}: {navigation: any}) => {
             backgroundColor:
               type === 'dark' ? 'rgb(10,20,26)' : Theme.PrimaryBackground,
           }}
-          handleIndicatorStyle={{backgroundColor: Theme.Placeholder}}
+          handleIndicatorStyle={{backgroundColor: Theme.LightGray}}
+          backdropComponent={renderBackdrop}
           enablePanDownToClose>
           {/* <Text style={{color: '#fff'}}>{id}</Text> */}
           <ReadingListBottomSheet2

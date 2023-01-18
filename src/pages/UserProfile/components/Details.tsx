@@ -50,16 +50,16 @@ const styles = StyleSheet.create({
   },
   name: {
     fontFamily: CustomFonts.SSP.SemiBold,
-    fontSize: 18,
+    fontSize: 20,
     marginBottom: Spacing.Margin.Small * 0.2,
   },
   username: {
     fontFamily: CustomFonts.SSP.Light,
-    fontSize: 15,
+    fontSize: 19,
     marginBottom: Spacing.Margin.Small,
   },
   bio: {
-    fontSize: 15,
+    fontSize: 17,
     width: '85%',
     textAlign: 'center',
     marginBottom: Spacing.Margin.Large,

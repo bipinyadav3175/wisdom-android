@@ -17,6 +17,7 @@ import CONSTANTS from '../../../CONSTANTS';
 
 import {CustomFonts, Spacing} from '../../../theme';
 import ListItem from '../../components/ListItem';
+import Header from '../../components/Header';
 
 const data = [
   {
@@ -113,13 +114,7 @@ const ReadingList = () => {
         estimatedItemSize={100}
         onRefresh={loadLists}
         refreshing={isRefreshing}
-        ListHeaderComponent={
-          <View style={styles.header}>
-            <Text style={[styles.title, {color: Theme.PrimaryText}]}>
-              Reading List
-            </Text>
-          </View>
-        }
+        ListHeaderComponent={<Header title="Reading lists" hideBackArrow />}
         ListFooterComponent={
           <View style={{width: '100%', height: Spacing.Margin.Large}} />
         }

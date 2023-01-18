@@ -2,7 +2,8 @@ const LightTheme = {
   PrimaryText: '#000000',
   SecondaryText: 'rgba(0, 0, 0, 0.5)',
   Placeholder: 'rgba(0, 0, 0, 0.35)',
-  PrimaryBackground: 'rgb(250, 250, 250)',
+  PrimaryBackground: 'rgb(248, 248, 248)',
+  // PrimaryBackground: 'rgb(250, 250, 250)',
   Pure: '#ffffff',
   RippleColor: 'rgba(0, 0, 0, 0.3)',
   Red: '#df2935',
@@ -10,7 +11,7 @@ const LightTheme = {
   Green: '#85cb33',
   LightBlue: '#b7c3f3',
   LightGray: '#cacfd6',
-  Black: '#000000',
+  Black: 'rgb(5, 5, 5)',
   LightPurple: '#6F008C',
   DarkPurple: '#270033',
 };
