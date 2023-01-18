@@ -2,7 +2,7 @@ const LightTheme = {
   PrimaryText: '#000000',
   SecondaryText: 'rgba(0, 0, 0, 0.5)',
   Placeholder: 'rgba(0, 0, 0, 0.35)',
-  PrimaryBackground: 'rgb(248, 248, 248)',
+  PrimaryBackground: 'rgb(250, 250, 250)',
   // PrimaryBackground: 'rgb(250, 250, 250)',
   Pure: '#ffffff',
   RippleColor: 'rgba(0, 0, 0, 0.3)',

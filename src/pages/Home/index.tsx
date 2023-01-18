@@ -418,7 +418,7 @@ const Home = ({navigation}: {navigation: any}) => {
           ref={homeFlatListRef}
           data={data}
           renderItem={renderHomeFeed}
-          estimatedItemSize={200}
+          estimatedItemSize={150}
           // initialNumToRender={4}
           showsVerticalScrollIndicator={false}
           ListFooterComponent={() => (

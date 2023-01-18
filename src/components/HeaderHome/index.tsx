@@ -26,7 +26,10 @@ const HeaderHome = () => {
     <View
       style={[
         styles.container,
-        {borderBottomColor: Theme.LightGray, backgroundColor: Theme.Pure},
+        {
+          borderBottomColor: Theme.LightGray,
+          backgroundColor: Theme.PrimaryBackground,
+        },
       ]}>
       <Text style={[styles.title, {color: Theme.PrimaryText}]}>Home</Text>
       {/* <View style={styles.rightContainer}>

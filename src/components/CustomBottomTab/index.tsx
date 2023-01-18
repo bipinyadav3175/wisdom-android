@@ -23,7 +23,7 @@ const CustomBottomTab = ({
         justifyContent: 'space-around',
         alignItems: 'center',
         paddingVertical: Spacing.Padding.Small,
-        backgroundColor: Theme.Pure,
+        backgroundColor: Theme.PrimaryBackground,
         borderTopColor: Theme.LightGray,
         borderTopWidth: StyleSheet.hairlineWidth,
       }}>
