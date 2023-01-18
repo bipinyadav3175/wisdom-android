@@ -163,28 +163,31 @@ const ArticleItem = ({
   //   setIsAddedToReadingList(false);
   // }, bookmarked);
 
-  useEffect(() => {
-    async function init() {
-      // console.log(data.id);
-      // await AsyncStorage.setItem(STORAGE_KEY.THEME, 'dark');
-      ArticleEmitter.addListener(
-        'added-to-list',
-        (info: [{storyId: string}]) => {
-          const storyId = info[0].storyId;
+  useEffect(
+    useCallback(() => {
+      async function init() {
+        // console.log(data.id);
+        // await AsyncStorage.setItem(STORAGE_KEY.THEME, 'dark');
+        ArticleEmitter.addListener(
+          'added-to-list',
+          (info: [{storyId: string}]) => {
+            const storyId = info[0].storyId;
 
-          if (storyId === data.id) {
-            setIsAddedToReadingList(true);
-          }
-        },
-      );
-    }
+            if (storyId === data.id) {
+              setIsAddedToReadingList(true);
+            }
+          },
+        );
+      }
 
-    init();
+      init();
 
-    return () => {
-      ArticleEmitter.removeAllListeners();
-    };
-  }, []);
+      return () => {
+        ArticleEmitter.removeAllListeners();
+      };
+    }, [data.id]),
+    [],
+  );
 
   return (
     <>
@@ -205,7 +208,7 @@ const ArticleItem = ({
                   {data.ownerName}
                   <Text
                     style={{
-                      fontSize: 14,
+                      fontSize: 15,
                       color: Theme.SecondaryText,
                       fontFamily: CustomFonts.SSP.Regular,
                     }}>
@@ -222,11 +225,7 @@ const ArticleItem = ({
               </View>
             </View>
           </Pressable>
-          <Pressable
-            onPress={() => onStoryDelete?.(data.id)}
-            style={{display: self ? 'flex' : 'none'}}>
-            <AntDesign name="delete" size={18} color={Theme.SecondaryText} />
-          </Pressable>
+
           <Pressable
             onPressIn={FollowOrUnfollow}
             style={[
@@ -280,9 +279,11 @@ const ArticleItem = ({
 
           <View style={styles.bottomCont}>
             <Text style={[styles.statText, {color: Theme.SecondaryText}]}>
-              {numberFormatter(data.likes)} likes •{' '}
-              {numberFormatter(data.commentCount)} comments • {data.timeToRead}{' '}
-              min read
+              {numberFormatter(data.likes)}{' '}
+              {data.likes === 1 ? 'like' : 'likes'} •{' '}
+              {numberFormatter(data.commentCount)}{' '}
+              {data.commentCount === 1 ? 'comment' : 'comments'} •{' '}
+              {data.timeToRead} min read
             </Text>
             <View style={{flexDirection: 'row'}}>
               <Pressable
@@ -332,6 +333,9 @@ export default ArticleItem;
 const styles = StyleSheet.create({
   container: {
     width: '100%',
+    borderBottomWidth: 4,
+    borderBottomColor: 'rgba(207, 212, 219, 0.5)',
+    paddingVertical: Spacing.Padding.Normal,
   },
   userCont: {
     width: '100%',
@@ -350,23 +354,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 40,
+    width: 45,
+    height: 45,
+    borderRadius: 45,
     marginRight: Spacing.Margin.Small,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: '#bdc3c7',
   },
   basicDetailCont: {
-    maxWidth: 0.65 * deviceWidth,
+    maxWidth: 0.63 * deviceWidth,
   },
   name: {
     fontFamily: CustomFonts.SSP.SemiBold,
-    fontSize: 15,
+    fontSize: 17,
     marginRight: 10,
   },
   bio: {
-    fontSize: 12,
+    fontSize: 14,
+    flex: 1,
   },
   followBtn: {
     paddingVertical: 2,
@@ -374,7 +379,7 @@ const styles = StyleSheet.create({
   },
   followText: {
     fontFamily: CustomFonts.SSP.SemiBold,
-    fontSize: 15,
+    fontSize: 17,
   },
   thumbImage: {
     maxHeight: thumbWidth * 1.4,
@@ -385,7 +390,7 @@ const styles = StyleSheet.create({
   title: {
     width: '100%',
     fontFamily: CustomFonts.SSP.SemiBold,
-    fontSize: 17,
+    fontSize: 19,
     paddingHorizontal: Spacing.Padding.Normal,
     marginTop: Spacing.Margin.Small,
   },
@@ -399,10 +404,10 @@ const styles = StyleSheet.create({
   },
   statText: {
     fontFamily: CustomFonts.SSP.Regular,
-    fontSize: 14,
+    fontSize: 16,
   },
   bPreview: {
-    fontSize: 15,
+    fontSize: 17,
     paddingHorizontal: Spacing.Padding.Normal,
   },
 });

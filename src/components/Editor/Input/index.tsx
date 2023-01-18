@@ -111,6 +111,7 @@ const Input = ({
         width: DeviceWidth - 2 * Spacing.Padding.Normal,
       }}>
       <TextInput
+        autoCorrect={false}
         ref={inputRef}
         // value={value}
         placeholder={index === 0 ? 'Start writing...' : 'continue writing...'}

@@ -242,6 +242,7 @@ const Editor = ({
   return (
     <View style={[styles.container]}>
       <TextInput
+        underlineColorAndroid="transparent"
         ref={titleRef}
         onBlur={() => {
           setForceFocus(0);

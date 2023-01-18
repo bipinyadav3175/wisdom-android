@@ -13,6 +13,7 @@ import BackgroundTimer from 'react-native-background-timer';
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
 import KeepAwake from 'react-native-keep-awake';
+import SystemNavigationBar from 'react-native-system-navigation-bar';
 
 // Icons
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -226,6 +227,12 @@ const ReadingPage = ({route}: {route: any}) => {
 
     // Fetch the story
     async function init() {
+      await SystemNavigationBar.setNavigationColor(
+        Theme.PrimaryBackground,
+        'dark',
+        'navigation',
+      );
+
       try {
         const res = await axios.get(`${CONSTANTS.BACKEND_URI}/story/${id}`, {
           headers: {
@@ -294,7 +301,7 @@ const ReadingPage = ({route}: {route: any}) => {
                 {data?.owner.name}
                 <Text
                   style={{
-                    fontSize: 14,
+                    fontSize: 15,
                     color: Theme.SecondaryText,
                     fontFamily: CustomFonts.SSP.Regular,
                   }}>
@@ -516,18 +523,18 @@ const styles = StyleSheet.create({
   },
   userName: {
     fontFamily: CustomFonts.SSP.Regular,
-    fontSize: 16,
+    fontSize: 17,
   },
   basicDetailCont: {
-    maxWidth: 0.65 * deviceWidth,
+    maxWidth: 0.63 * deviceWidth,
   },
   name: {
     fontFamily: CustomFonts.SSP.SemiBold,
-    fontSize: 15,
+    fontSize: 17,
     marginRight: 10,
   },
   bio: {
-    fontSize: 12,
+    fontSize: 14,
   },
   followBtn: {
     flexDirection: 'row',
@@ -536,10 +543,11 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     paddingHorizontal: Spacing.Padding.Normal,
     paddingVertical: 2,
+    marginLeft: Spacing.Margin.Small,
   },
   followText: {
     fontFamily: CustomFonts.SSP.Regular,
-    fontSize: 18,
+    fontSize: 17,
   },
   actionsCont: {
     flexDirection: 'row',
@@ -550,7 +558,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   statText: {
-    fontSize: 12,
+    fontSize: 15,
   },
 
   statCont: {

@@ -49,7 +49,7 @@ const ListItem = ({
           {data.listName}
         </Text>
         <Text style={[styles.count, {color: Theme.SecondaryText}]}>
-          {data.noOfStories} stories
+          {data.noOfStories} {data.noOfStories === 1 ? 'story' : 'stories'}
         </Text>
         {/* <View style={styles.catCont}>
           {data.categories.length <= 3
@@ -104,7 +104,7 @@ export default ListItem;
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    paddingHorizontal: Spacing.Padding.Large,
+    paddingHorizontal: Spacing.Padding.Normal,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
   image: {
     width: '40%',
     height: 100,
-    borderRadius: 5,
+    borderRadius: 7,
   },
   textCont: {
     height: 100,
@@ -122,10 +122,10 @@ const styles = StyleSheet.create({
   name: {
     fontFamily: CustomFonts.SSP.Regular,
     fontSize: 18,
-    marginBottom: Spacing.Margin.Small / 2,
+    // marginBottom: Spacing.Margin.Small / 2,
   },
   count: {
-    fontSize: 14,
+    fontSize: 16,
     marginBottom: Spacing.Margin.Small / 2,
   },
   catCont: {

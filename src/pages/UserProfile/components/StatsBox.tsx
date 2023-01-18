@@ -24,7 +24,7 @@ const StatsBox = (props: statsBoxProps) => {
   const following = useMemo<string>(() => numberFormatter(props.following), []);
 
   return (
-    <View style={[styles.container, {backgroundColor: Theme.LightGray}]}>
+    <View style={[styles.container]}>
       <View style={[styles.wrapper, {borderRightColor: Theme.SecondaryText}]}>
         <Text style={[styles.stat, {color: Theme.PrimaryText}]}>
           {followers}
@@ -33,9 +33,7 @@ const StatsBox = (props: statsBoxProps) => {
           Followers
         </Text>
       </View>
-      <View
-        style={[styles.separator, {backgroundColor: Theme.SecondaryText}]}
-      />
+      <View style={[styles.separator, {backgroundColor: Theme.LightGray}]} />
       <View style={[styles.wrapper, {borderRightColor: Theme.SecondaryText}]}>
         <Text style={[styles.stat, {color: Theme.PrimaryText}]}>
           {storyViews}
@@ -44,9 +42,7 @@ const StatsBox = (props: statsBoxProps) => {
           Story views
         </Text>
       </View>
-      <View
-        style={[styles.separator, {backgroundColor: Theme.SecondaryText}]}
-      />
+      <View style={[styles.separator, {backgroundColor: Theme.LightGray}]} />
       <View style={[styles.wrapper]}>
         <Text style={[styles.stat, {color: Theme.PrimaryText}]}>
           {following}
@@ -82,10 +78,10 @@ const styles = StyleSheet.create({
   },
   stat: {
     fontFamily: CustomFonts.SSP.SemiBold,
-    fontSize: 20,
+    fontSize: 22,
   },
   title: {
     fontFamily: CustomFonts.SSP.Regular,
-    fontSize: 15,
+    fontSize: 16,
   },
 });

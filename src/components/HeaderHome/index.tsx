@@ -1,5 +1,7 @@
-import {View, Text, StyleSheet, Pressable, Image} from 'react-native';
-import React, {useContext} from 'react';
+import {View, Text, StyleSheet, Pressable, StatusBar} from 'react-native';
+import React, {useContext, useEffect} from 'react';
+import SystemNavigationBar from 'react-native-system-navigation-bar';
+
 import {CustomFonts, Spacing} from '../../../theme';
 import {useNavigation} from '@react-navigation/native';
 import ThemeContext from '../../contexts/ThemeContext';
@@ -20,46 +22,13 @@ const HeaderHome = () => {
   const {Theme} = useContext(ThemeContext);
   const Streak = useContext(StreakContext);
 
-  // Styles
-  const styles = StyleSheet.create({
-    container: {
-      width: '100%',
-      height: 60,
-      justifyContent: 'space-between',
-      paddingHorizontal: Spacing.Padding.Normal,
-      alignItems: 'center',
-      flexDirection: 'row',
-      borderBottomWidth: StyleSheet.hairlineWidth,
-    },
-    title: {
-      fontFamily: CustomFonts.SSP.Bold,
-      color: Theme.PrimaryText,
-      fontSize: 22,
-    },
-    rightContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    pressCont: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingVertical: 3,
-      paddingHorizontal: 9,
-      marginRight: 20,
-      borderRadius: 5,
-      backgroundColor: '#34495e',
-    },
-    streakText: {
-      color: Theme.PrimaryText,
-      fontSize: 16,
-      fontWeight: '600',
-      fontFamily: CustomFonts.SSP.SemiBold,
-    },
-  });
-
   return (
-    <View style={[styles.container, {borderBottomColor: Theme.LightGray}]}>
-      <Text style={styles.title}>Home</Text>
+    <View
+      style={[
+        styles.container,
+        {borderBottomColor: Theme.LightGray, backgroundColor: Theme.Pure},
+      ]}>
+      <Text style={[styles.title, {color: Theme.PrimaryText}]}>Home</Text>
       {/* <View style={styles.rightContainer}>
         <Pressable
           style={styles.pressCont}
@@ -87,12 +56,49 @@ const HeaderHome = () => {
           name="fire-alt"
           size={22}
           color="#FFA113"
-          style={{marginRight: 8}}
+          style={{marginRight: 8, opacity: 0.85}}
         />
-        <Text style={styles.streakText}>{Streak.currentStreak}</Text>
+        <Text style={[styles.streakText, {color: Theme.PrimaryText}]}>
+          {Streak.currentStreak}
+        </Text>
       </Pressable>
     </View>
   );
 };
 
 export default HeaderHome;
+
+// Styles
+const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+    paddingVertical: Spacing.Padding.Small,
+    justifyContent: 'space-between',
+    paddingHorizontal: Spacing.Padding.Normal,
+    alignItems: 'center',
+    flexDirection: 'row',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  title: {
+    fontFamily: CustomFonts.SSP.Bold,
+    fontSize: 22,
+  },
+  rightContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  pressCont: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 3,
+    paddingHorizontal: 9,
+    marginRight: 20,
+    borderRadius: 5,
+    backgroundColor: '#34495e',
+  },
+  streakText: {
+    fontSize: 16,
+    fontWeight: '600',
+    fontFamily: CustomFonts.SSP.SemiBold,
+  },
+});
