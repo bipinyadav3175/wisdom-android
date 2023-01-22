@@ -6,6 +6,9 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import WritingPage from '../pages/WritingPage';
 import StoryDetails from '../pages/StoryDetails';
 
+// Components
+import Header from '../components/Header';
+
 const Stack = createNativeStackNavigator();
 
 const EditorNav = () => {
@@ -17,7 +20,7 @@ const EditorNav = () => {
       <Stack.Screen
         name="StoryDetails"
         component={StoryDetails}
-        options={{headerShown: true, headerTitle: ''}}
+        options={{headerShown: true, header: () => <Header showSeperator />}}
       />
     </Stack.Navigator>
   );

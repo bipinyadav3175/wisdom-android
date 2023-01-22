@@ -12,15 +12,25 @@ const Header = ({
   title,
   hideBackArrow,
   backgroundColor,
+  showSeperator,
 }: {
   title: string;
   hideBackArrow: boolean;
+  showSeperator: boolean;
   backgroundColor: string | undefined;
 }) => {
   const {Theme} = useContext(ThemeContext);
   const navigation = useNavigation();
   return (
-    <View style={[styles.header, {backgroundColor}]}>
+    <View
+      style={[
+        styles.header,
+        {
+          backgroundColor,
+          borderBottomColor: Theme.LightGray,
+          borderBottomWidth: showSeperator ? StyleSheet.hairlineWidth : 0,
+        },
+      ]}>
       <Text style={[styles.title, {color: Theme.PrimaryText}]}>{title}</Text>
       <Pressable
         style={[styles.back, {display: hideBackArrow ? 'none' : 'flex'}]}
@@ -35,6 +45,7 @@ Header.defaultProps = {
   title: '',
   hideBackArrow: false,
   backgroundColor: undefined,
+  showSeperator: false,
 };
 
 export default Header;

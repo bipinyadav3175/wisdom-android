@@ -1,4 +1,11 @@
-import {View, Text, StyleSheet, Pressable, Image} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  Image,
+  ActivityIndicator,
+} from 'react-native';
 import {FlashList} from '@shopify/flash-list';
 import React, {
   useContext,
@@ -204,6 +211,7 @@ const ListPage = ({route}: {route: any}) => {
   //
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
   const [text, setText] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
   // Render callback function for performance improvement
   const renderAllItems = useCallback(({item}: {item: any}) => {
@@ -385,10 +393,32 @@ const ListPage = ({route}: {route: any}) => {
       } catch (err) {
         console.log(err);
       }
+
+      setIsLoading(false);
     }
 
     init();
   }, []);
+
+  if (isLoading) {
+    return (
+      <View
+        style={{
+          width: '100%',
+          flex: 1,
+          paddingVertical: Spacing.Padding.Large * 3,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <ActivityIndicator
+          color={Theme.Black}
+          animating={isLoading}
+          size={35}
+          // style={{display: isLoading ? 'flex' : 'none'}}
+        />
+      </View>
+    );
+  }
 
   return (
     <>

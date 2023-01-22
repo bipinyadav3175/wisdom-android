@@ -69,53 +69,60 @@ const CommentItem = ({id, user, text, stats, isLikedByYou}: CommentType) => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+    <>
+      <View style={styles.container}>
         <Image source={{uri: user.avatar_50}} style={styles.avatar} />
-        <View>
-          <Text style={[styles.name, {color: Theme.PrimaryText}]}>
-            {user.name}
-          </Text>
-          <Text style={[styles.username, {color: Theme.SecondaryText}]}>
-            @{user.username}
-          </Text>
-        </View>
-      </View>
 
-      <Pressable
-        style={styles.commentCont}
-        onPress={() => {
-          //@ts-ignore
-          navigation.navigate('Replies', {id});
-        }}>
-        <Text style={[styles.commentText, {color: Theme.SecondaryText}]}>
-          {commentText.length > 250
-            ? trimCommentText(commentText)
-            : commentText}
+        <View style={styles.bodyWrapper}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View>
+              <Text style={[styles.name, {color: Theme.PrimaryText}]}>
+                {user.name}
+              </Text>
+              <Text style={[styles.username, {color: Theme.SecondaryText}]}>
+                @{user.username}
+              </Text>
+            </View>
+          </View>
 
-          {commentText.length > 250 ? (
-            <Text style={styles.viewMore}>View more</Text>
-          ) : null}
-        </Text>
-      </Pressable>
+          <Pressable
+            style={styles.commentCont}
+            onPress={() => {
+              //@ts-ignore
+              navigation.navigate('Replies', {id});
+            }}>
+            <Text style={[styles.commentText, {color: Theme.PrimaryText}]}>
+              {commentText.length > 250
+                ? trimCommentText(commentText)
+                : commentText}
 
-      <View style={styles.actionsCont}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Pressable onPress={doLike}>
-            {isLikedByMe ? (
-              <AntDesign name="heart" size={24} color="#fc5c65" />
-            ) : (
-              <AntDesign name="hearto" size={24} color={Theme.SecondaryText} />
-            )}
+              {commentText.length > 250 ? (
+                <Text style={{color: Theme.SecondaryText}}>view more</Text>
+              ) : null}
+            </Text>
           </Pressable>
-          <Text style={[{color: Theme.SecondaryText}, styles.statText]}>
-            {likes}
-          </Text>
-        </View>
 
-        {/* Disabled replies (/for future) */}
+          <View style={styles.actionsCont}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Pressable onPress={doLike}>
+                {isLikedByMe ? (
+                  <AntDesign name="heart" size={24} color="#fc5c65" />
+                ) : (
+                  <AntDesign
+                    name="hearto"
+                    size={22}
+                    color={Theme.PrimaryText}
+                  />
+                )}
+              </Pressable>
+              <Text style={[{color: Theme.PrimaryText}, styles.statText]}>
+                {stats?.likes != 0 ? likes : ''}
+              </Text>
+            </View>
 
-        {/* <ActionSeperator />
+            {/* Disabled replies (/for future) */}
+
+            {/* <ActionSeperator />
 
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <Pressable style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -125,8 +132,10 @@ const CommentItem = ({id, user, text, stats, isLikedByYou}: CommentType) => {
             </Text>
           </Pressable>
         </View> */}
+          </View>
+        </View>
       </View>
-    </View>
+    </>
   );
 };
 

@@ -7,8 +7,16 @@ import {
   ScrollView,
   AppState,
   Dimensions,
+  ActivityIndicator,
 } from 'react-native';
-import React, {useEffect, useContext, useState, useRef, useMemo} from 'react';
+import React, {
+  useEffect,
+  useContext,
+  useState,
+  useRef,
+  useMemo,
+  useCallback,
+} from 'react';
 import BackgroundTimer from 'react-native-background-timer';
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
@@ -29,11 +37,13 @@ import numberFormatter from '../../utils/numberFormatter';
 
 // Bottom Sheet for comments
 import CommentsNav from '../../NavPages/CommentsNav';
-import BottomSheet from '@gorhom/bottom-sheet';
+import BottomSheet, {BottomSheetBackdrop} from '@gorhom/bottom-sheet';
 
 // Components
 import Paragraph from './Paragraph';
 import Heading from './Heading';
+import Header from '../../components/Header';
+
 import timeSince from '../../utils/timeFormatter';
 
 const storyData = [
@@ -128,7 +138,17 @@ const ReadingPage = ({route}: {route: any}) => {
 
   // Bottom Sheet
   const bs = useRef<BottomSheet>(null);
-  const snapPoints = useMemo(() => [500, '100%'], []);
+  const snapPoints = useMemo(() => ['50%', '100%'], []);
+
+  const renderBackdrop = useCallback(props => {
+    return (
+      <BottomSheetBackdrop
+        {...props}
+        appearsOnIndex={0}
+        disappearsOnIndex={-1}
+      />
+    );
+  }, []);
 
   const FollowOrUnfollow = async () => {
     try {
@@ -276,11 +296,31 @@ const ReadingPage = ({route}: {route: any}) => {
   }, []);
 
   if (loading && !data) {
-    return <View />;
+    return (
+      <>
+        <Header />
+        <View
+          style={{
+            width: '100%',
+            flex: 1,
+            paddingVertical: Spacing.Padding.Large * 3,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <ActivityIndicator
+            color={Theme.Black}
+            animating={loading}
+            size={35}
+            // style={{display: isLoading ? 'flex' : 'none'}}
+          />
+        </View>
+      </>
+    );
   }
 
   return (
     <View style={{flex: 1}}>
+      <Header />
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={[styles.container, {backgroundColor: Theme.PrimaryBackground}]}>
@@ -409,7 +449,9 @@ const ReadingPage = ({route}: {route: any}) => {
           <Text style={[styles.statText, {color: Theme.PrimaryText}]}>
             {`${numberFormatter(likes as number)} ${
               likes === 1 ? 'like' : 'likes'
-            } • ${numberFormatter(data?.commentCount as number)} comments`}
+            } • ${numberFormatter(data?.commentCount as number)} ${
+              data?.commentCount === 1 ? 'comment' : 'comments'
+            }`}
           </Text>
 
           <View style={{justifyContent: 'center'}}>
@@ -438,7 +480,7 @@ const ReadingPage = ({route}: {route: any}) => {
           style={{
             width: '100%',
             height: StyleSheet.hairlineWidth,
-            backgroundColor: Theme.Placeholder,
+            backgroundColor: Theme.LightGray,
             marginTop: Spacing.Margin.Small,
           }}
         />
@@ -463,7 +505,7 @@ const ReadingPage = ({route}: {route: any}) => {
             <Pressable
               onPress={() => {
                 bs.current?.snapToIndex(0);
-                bs.current?.snapToIndex(1);
+                // bs.current?.snapToIndex(1);
               }}>
               <Ionicons
                 name="chatbubble-outline"
@@ -477,13 +519,21 @@ const ReadingPage = ({route}: {route: any}) => {
         <View style={{width: '100%', height: 30}} />
       </ScrollView>
       <BottomSheet
+        onChange={index => {
+          if (index !== -1) {
+            Streak.pauseTimer();
+          } else {
+            Streak.resumeTimer();
+          }
+        }}
         ref={bs}
         index={-1}
+        backdropComponent={renderBackdrop}
         backgroundStyle={{
           backgroundColor:
             type === 'dark' ? 'rgb(10,20,26)' : Theme.PrimaryBackground,
         }}
-        handleIndicatorStyle={{backgroundColor: Theme.Placeholder}}
+        handleIndicatorStyle={{backgroundColor: Theme.LightGray}}
         snapPoints={snapPoints}
         enablePanDownToClose>
         <CommentsNav storyId={id} />
@@ -499,6 +549,7 @@ const styles = StyleSheet.create({
     width: '100%',
     flex: 1,
     paddingVertical: Spacing.Padding.Normal,
+    paddingTop: Spacing.Padding.Small,
   },
   title: {
     fontFamily: CustomFonts.SSP.SemiBold,
