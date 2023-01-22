@@ -6,6 +6,7 @@ import {
   KeyboardAvoidingView,
   TextInput,
   Pressable,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useContext, useState, useRef, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
@@ -39,6 +40,8 @@ const StoryDetails = () => {
   const [selectedCat, setSelectedCat] = useState<null | string>(null);
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState<{value: string; label: string}[]>([]);
+
+  const [isPublishing, setIsPublishing] = useState(false);
 
   const [btnDisabled, setBtnDisabled] = useState(true);
 
@@ -74,6 +77,9 @@ const StoryDetails = () => {
   };
 
   const publish = async () => {
+    // Show Loading Icon
+    setIsPublishing(true);
+
     // Publish the Story
     let storyData = state as EditorContentType;
 
@@ -146,6 +152,10 @@ const StoryDetails = () => {
         text2: 'Please try again',
       });
     }
+
+    // Hide the loading icon
+    setIsPublishing(false);
+
     // else {
     //   // Send to the api endpoint
     //   try {
@@ -207,7 +217,7 @@ const StoryDetails = () => {
           placeholderTextColor={Theme.Placeholder}
           style={[
             styles.title,
-            {color: Theme.PrimaryText, borderColor: Theme.Placeholder},
+            {color: Theme.PrimaryText, borderColor: Theme.LightGray},
           ]}
           maxLength={120}
           multiline
@@ -233,10 +243,7 @@ const StoryDetails = () => {
                   style={[
                     styles.tagText,
                     {
-                      color:
-                        type === 'dark'
-                          ? Theme.SecondaryText
-                          : Theme.PrimaryText,
+                      color: Theme.PrimaryText,
                     },
                   ]}>
                   {tag}
@@ -270,8 +277,8 @@ const StoryDetails = () => {
             <TextInput
               ref={tagInput}
               value={inputText}
-              style={[styles.tagInput, {color: Theme.SecondaryText}]}
-              placeholder="add..."
+              style={[styles.tagInput, {color: Theme.PrimaryText}]}
+              placeholder="Add..."
               placeholderTextColor={Theme.Placeholder}
               onEndEditing={addTag}
               onChangeText={tex => setInputText(tex)}
@@ -323,8 +330,21 @@ const StoryDetails = () => {
                 opacity: !btnDisabled ? 1 : 0.7,
               },
             ]}
-            disabled={btnDisabled}>
-            <Text style={[styles.btnText]}>Publish</Text>
+            disabled={btnDisabled || isPublishing}>
+            <Text
+              style={[
+                styles.btnText,
+                {display: isPublishing ? 'none' : 'flex'},
+              ]}>
+              Publish
+            </Text>
+            <ActivityIndicator
+              color={Theme.LightGray}
+              animating={isPublishing}
+              size={24}
+              style={{display: isPublishing ? 'flex' : 'none'}}
+              // style={{display: isLoading ? 'flex' : 'none'}}
+            />
           </Pressable>
         </View>
       </ScrollView>
@@ -420,7 +440,7 @@ const styles = StyleSheet.create({
   },
   btn: {
     width: '100%',
-    paddingVertical: 10,
+    height: 50,
     borderRadius: 7,
     backgroundColor: '#5f27cd',
     flexDirection: 'row',

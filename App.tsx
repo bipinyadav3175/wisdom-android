@@ -138,17 +138,7 @@ const NavigationInsider = () => {
                     component={ReadingPage}
                     options={{
                       animation: 'slide_from_right',
-                      headerShown: true,
-                      headerTintColor: Theme.PrimaryText,
-                      headerBackground: () => (
-                        <View
-                          style={{
-                            backgroundColor: Theme.PrimaryBackground,
-                            flex: 1,
-                          }}
-                        />
-                      ),
-                      headerTitle: '',
+                      headerShown: false,
                     }}
                   />
                   <Stack.Screen

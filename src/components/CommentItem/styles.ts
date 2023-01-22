@@ -1,29 +1,37 @@
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Dimensions} from 'react-native';
 import {CustomFonts, Spacing} from '../../../theme';
+
+const deviceWidth = Dimensions.get('window').width;
 
 export default StyleSheet.create({
   container: {
-    width: '100%',
+    width: deviceWidth,
+    // paddingHorizontal: Spacing.Padding.Normal,
+    // paddingRight: Spacing.Padding.Normal,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
   },
   avatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 50,
-    marginRight: Spacing.Margin.Large,
+    width: 40,
+    height: 40,
+    borderRadius: 40,
+    marginHorizontal: Spacing.Margin.Normal,
   },
   name: {
     fontFamily: CustomFonts.SSP.Regular,
     fontSize: 17,
   },
   username: {
-    fontSize: 13,
+    fontSize: 15,
   },
   commentCont: {
-    marginTop: Spacing.Margin.Large,
+    width: '100%',
+    marginTop: Spacing.Margin.Small,
+    paddingRight: Spacing.Padding.Normal,
   },
   commentText: {
-    fontSize: 18,
-    lineHeight: 30,
+    fontSize: 19,
+    lineHeight: 25,
   },
   actionsCont: {
     marginTop: Spacing.Margin.Normal,
@@ -34,6 +42,10 @@ export default StyleSheet.create({
     marginHorizontal: Spacing.Margin.Small,
   },
   viewMore: {
-    color: '#70a1ff',
+    // color: '#70a1ff',
+  },
+  bodyWrapper: {
+    marginRight: Spacing.Margin.Normal,
+    width: deviceWidth - (40 + 15 * 3),
   },
 });

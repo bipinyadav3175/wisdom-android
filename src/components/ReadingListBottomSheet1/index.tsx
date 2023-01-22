@@ -131,13 +131,17 @@ const ReadingListBottomSheet1 = ({
     return (
       <View
         style={{
-          flex: 1,
           width: '100%',
-          height: '100%',
+          flex: 1,
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        <ActivityIndicator size={24} />
+        <ActivityIndicator
+          color={Theme.Black}
+          animating={isLoading}
+          size={35}
+          // style={{display: isLoading ? 'flex' : 'none'}}
+        />
       </View>
     );
   }

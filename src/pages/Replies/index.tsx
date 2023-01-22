@@ -1,4 +1,4 @@
-import {View, Text, Pressable, Image} from 'react-native';
+import {View, Text, Pressable, Image, ActivityIndicator} from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
 import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
@@ -16,6 +16,7 @@ import ActionSeperator from '../../components/CommentItem/ActionSeperator';
 
 // Utils
 import numberFormatter from '../../utils/numberFormatter';
+import {Spacing} from '../../../theme';
 
 type CommentType = {
   id: string;
@@ -107,8 +108,20 @@ const Replies = ({route}: {route: any}) => {
 
   if (isLoading) {
     return (
-      <View>
-        <Text>Loading...</Text>
+      <View
+        style={{
+          width: '100%',
+          flex: 1,
+          paddingVertical: Spacing.Padding.Large * 3,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <ActivityIndicator
+          color={Theme.Black}
+          animating={isLoading}
+          size={35}
+          // style={{display: isLoading ? 'flex' : 'none'}}
+        />
       </View>
     );
   }
@@ -122,24 +135,13 @@ const Replies = ({route}: {route: any}) => {
         },
         styles.container,
       ]}>
-      <View style={styles.header}>
-        <Pressable
-          onPress={() => {
-            navigation.goBack();
-          }}>
-          <Entypo
-            name="chevron-thin-left"
-            size={24}
-            color={Theme.SecondaryText}
-            style={styles.chevron}
-          />
-        </Pressable>
-        <Text style={[styles.heading, {color: Theme.SecondaryText}]}>
-          Replies
-        </Text>
-      </View>
-
-      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          paddingHorizontal: Spacing.Padding.Normal,
+          marginTop: Spacing.Margin.Large,
+        }}>
         <Image source={{uri: comment?.user.avatar_50}} style={styles.avatar} />
         <View>
           <Text style={[styles.name, {color: Theme.PrimaryText}]}>
@@ -152,7 +154,7 @@ const Replies = ({route}: {route: any}) => {
       </View>
 
       <View style={styles.commentCont}>
-        <Text style={[styles.commentText, {color: Theme.SecondaryText}]}>
+        <Text style={[styles.commentText, {color: Theme.PrimaryText}]}>
           {comment?.text}
         </Text>
       </View>
@@ -163,10 +165,10 @@ const Replies = ({route}: {route: any}) => {
             {isLikedByMe ? (
               <AntDesign name="heart" size={24} color="#fc5c65" />
             ) : (
-              <AntDesign name="hearto" size={24} color={Theme.SecondaryText} />
+              <AntDesign name="hearto" size={24} color={Theme.PrimaryText} />
             )}
           </Pressable>
-          <Text style={[{color: Theme.SecondaryText}, styles.statText]}>
+          <Text style={[{color: Theme.PrimaryText}, styles.statText]}>
             {likeString}
           </Text>
         </View>

@@ -4,7 +4,6 @@ import {Spacing, CustomFonts} from '../../../theme';
 export default StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: Spacing.Padding.Large,
   },
   avatar: {
     width: 50,
@@ -20,16 +19,18 @@ export default StyleSheet.create({
     fontSize: 13,
   },
   commentCont: {
-    marginTop: Spacing.Margin.Large,
+    marginTop: Spacing.Margin.Normal,
+    paddingHorizontal: Spacing.Padding.Normal,
   },
   commentText: {
-    fontSize: 18,
-    lineHeight: 30,
+    fontSize: 19,
+    lineHeight: 25,
   },
   actionsCont: {
     marginTop: Spacing.Margin.Normal,
     flexDirection: 'row',
     alignItems: 'center',
+    paddingHorizontal: Spacing.Padding.Normal,
   },
   statText: {
     marginHorizontal: Spacing.Margin.Small,

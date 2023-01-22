@@ -4,10 +4,10 @@ import {CustomFonts, Spacing} from '../../../theme';
 export default StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: Spacing.Padding.Large,
   },
   headerCont: {
     marginVertical: Spacing.Margin.Normal,
+    paddingHorizontal: Spacing.Padding.Normal,
   },
   heading: {
     fontFamily: CustomFonts.SSP.Regular,
@@ -17,10 +17,11 @@ export default StyleSheet.create({
   input: {
     width: '100%',
     borderRadius: 13,
-    fontSize: 16,
+    fontSize: 17,
     paddingHorizontal: Spacing.Padding.Normal,
     marginVertical: Spacing.Margin.Normal,
     maxHeight: 300,
+    borderWidth: 1,
   },
   sendCont: {
     width: '100%',
@@ -29,6 +30,7 @@ export default StyleSheet.create({
     justifyContent: 'flex-end',
   },
   send: {
-    fontSize: 17,
+    fontSize: 19,
+    fontFamily: CustomFonts.SSP.SemiBold,
   },
 });

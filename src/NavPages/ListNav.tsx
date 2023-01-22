@@ -7,6 +7,7 @@ import ReadingList from '../pages/ReadingList';
 import ListPage from '../pages/ListPage';
 //
 import ThemeContext from '../contexts/ThemeContext';
+import Header from '../components/Header';
 
 const Stack = createNativeStackNavigator();
 
@@ -24,11 +25,7 @@ const ListNav = () => {
         component={ListPage}
         options={{
           headerShown: true,
-          headerTintColor: Theme.PrimaryText,
-          headerBackground: () => (
-            <View style={{backgroundColor: Theme.PrimaryBackground, flex: 1}} />
-          ),
-          headerTitle: '',
+          header: () => <Header />,
         }}
       />
     </Stack.Navigator>

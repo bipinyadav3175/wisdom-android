@@ -429,7 +429,7 @@ const Home = ({navigation}: {navigation: any}) => {
                 paddingVertical: Spacing.Padding.Large * 3,
               }}>
               <ActivityIndicator
-                color="#4b7bec"
+                color={Theme.Black}
                 animating={isLoading}
                 size={35}
                 // style={{display: isLoading ? 'flex' : 'none'}}
@@ -456,8 +456,9 @@ const Home = ({navigation}: {navigation: any}) => {
           snapPoints={snapPoints}
           ref={addBottomSheetRef}
           index={-1}
-          onChange={index => {
-            if (index === 0) {
+          onAnimate={from => {
+            if (from === -1) {
+              // Start loading the lists at the earliest
               setIsLoadingLists(true);
               loadAllLists();
             }

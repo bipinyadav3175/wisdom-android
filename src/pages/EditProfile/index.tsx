@@ -306,7 +306,7 @@ const EditProfile = () => {
               placeholder="Name"
               style={[
                 styles.input,
-                {color: Theme.PrimaryText, borderColor: Theme.Placeholder},
+                {color: Theme.PrimaryText, borderColor: Theme.LightGray},
               ]}
               placeholderTextColor={Theme.Placeholder}
               value={name}
@@ -323,7 +323,7 @@ const EditProfile = () => {
               style={[
                 styles.input,
                 {
-                  borderColor: Theme.Placeholder,
+                  borderColor: Theme.LightGray,
                   flexDirection: 'row',
                   alignItems: 'center',
                 },
@@ -358,7 +358,7 @@ const EditProfile = () => {
               placeholder="Tell more about you"
               style={[
                 styles.input,
-                {color: Theme.PrimaryText, borderColor: Theme.Placeholder},
+                {color: Theme.PrimaryText, borderColor: Theme.LightGray},
               ]}
               placeholderTextColor={Theme.Placeholder}
               maxLength={120}

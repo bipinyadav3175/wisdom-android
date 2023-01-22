@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   inputTitle: {
-    fontFamily: CustomFonts.SSP.Regular,
+    fontFamily: CustomFonts.SSP.SemiBold,
     fontSize: 15,
   },
   input: {

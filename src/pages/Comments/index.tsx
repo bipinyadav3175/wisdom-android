@@ -1,4 +1,12 @@
-import {View, Text, Pressable, ToastAndroid, Keyboard} from 'react-native';
+import {
+  View,
+  Text,
+  Pressable,
+  ToastAndroid,
+  Keyboard,
+  StyleSheet,
+  ActivityIndicator,
+} from 'react-native';
 import React, {useContext, useCallback, useState, useEffect} from 'react';
 import axios from 'axios';
 import styles from './styles';
@@ -127,20 +135,22 @@ const Comments = ({route}: {route: any}) => {
       //   ToastAndroid.show(resData.message, ToastAndroid.SHORT);
       // }
       if (resData.success) {
-        setComments([resData.comment, ...comments]);
+        setComments(oldComments => [resData.comment, ...oldComments]);
+        console.log(resData.comment);
         return true;
       }
-      return false;
     } catch (err) {
       console.log(err);
-      return false;
     }
+    return false;
   };
 
   const loadMore = async () => {
     if (!hasMore) {
       return;
     }
+
+    setIsLoading(true);
 
     try {
       const res = await axios.post(
@@ -163,7 +173,7 @@ const Comments = ({route}: {route: any}) => {
       // }
 
       if (resData.success) {
-        setComments([...comments, ...resData.data]);
+        setComments(oldData => [...oldData, ...resData.data]);
       }
 
       if (resData.hasMore) {
@@ -227,7 +237,7 @@ const Comments = ({route}: {route: any}) => {
     );
   }, []);
 
-  const Header = useCallback(() => {
+  const ListHeader = useCallback(() => {
     return (
       <RenderHeader
         onSendPress={async commentText => {
@@ -298,36 +308,50 @@ const Comments = ({route}: {route: any}) => {
   }
 
   return (
-    <View
-      style={[
-        {
-          backgroundColor:
-            type === 'dark' ? 'rgb(10,20,26)' : Theme.PrimaryBackground,
-        },
-        styles.container,
-      ]}>
-      <BottomSheetFlatList
-        keyboardShouldPersistTaps="handled"
-        data={comments}
-        renderItem={renderComments}
-        ListHeaderComponent={Header}
-        // ListHeaderComponent={() => (
-        //   <RenderHeader
-        //     onSendPress={async commentText => {
-        //       Keyboard.dismiss();
-        //       return await publishComment(commentText);
-        //     }}
-        //   />
-        // )}
-
-        showsVerticalScrollIndicator={false}
-        onEndReached={loadMore}
-        initialNumToRender={4}
-        refreshing={isRefreshing}
-        onRefresh={refresh}
-        ItemSeparatorComponent={() => <Seperator color={Theme.Placeholder} />}
-      />
-    </View>
+    <>
+      <View
+        style={[
+          {
+            backgroundColor:
+              type === 'dark' ? 'rgb(10,20,26)' : Theme.PrimaryBackground,
+          },
+          styles.container,
+        ]}>
+        <BottomSheetFlatList
+          keyboardShouldPersistTaps="handled"
+          data={comments}
+          renderItem={renderComments}
+          ListHeaderComponent={ListHeader}
+          ListFooterComponent={() => (
+            <>
+              {hasMore ? null : <Seperator color={Theme.LightGray as string} />}
+              <View
+                style={{
+                  width: '100%',
+                  height: Spacing.Margin.Large,
+                  paddingVertical: hasMore ? Spacing.Padding.Large * 3 : 0,
+                }}>
+                <ActivityIndicator
+                  color={Theme.Black}
+                  animating={isLoading}
+                  size={35}
+                  style={{display: hasMore ? 'flex' : 'none'}}
+                />
+              </View>
+            </>
+          )}
+          showsVerticalScrollIndicator={false}
+          onEndReached={loadMore}
+          onEndReachedThreshold={0.4}
+          initialNumToRender={4}
+          refreshing={isRefreshing}
+          onRefresh={refresh}
+          ItemSeparatorComponent={() => (
+            <Seperator color={Theme.LightGray as string} />
+          )}
+        />
+      </View>
+    </>
   );
 };
 
@@ -336,11 +360,10 @@ const Seperator = ({color}: {color: string}) => {
     <View
       style={{
         alignSelf: 'center',
-        width: '80%',
+        width: '100%',
         backgroundColor: color,
-        height: 1,
-        borderRadius: 3,
-        marginVertical: Spacing.Margin.Large,
+        height: StyleSheet.hairlineWidth,
+        marginVertical: Spacing.Margin.Normal,
       }}
     />
   );
@@ -354,6 +377,7 @@ const RenderHeader = ({
   const [insideText, setInsideText] = useState('');
   const [isDisabled, setIsDisabled] = useState(true);
   const {Theme, type} = useContext(ThemeContext);
+  const [isSendingComment, setIsSendingComment] = useState(false);
 
   useEffect(() => {
     if (insideText) {
@@ -367,16 +391,12 @@ const RenderHeader = ({
 
   return (
     <View style={styles.headerCont}>
-      <Text style={[styles.heading, {color: Theme.SecondaryText}]}>
-        Comments
-      </Text>
       <BottomSheetTextInput
         // onContentSizeChange={() => {}}
         // onSubmitEditing={() => {}}
         value={insideText}
         onChangeText={val => {
           setInsideText(val);
-          console.log(val);
         }}
         multiline
         placeholder="Write a comment"
@@ -384,17 +404,19 @@ const RenderHeader = ({
         style={[
           styles.input,
           {
-            color: Theme.SecondaryText,
-            backgroundColor:
-              type === 'dark' ? 'rgb(37,47,53)' : 'rgb(200, 200, 200)',
+            color: Theme.PrimaryText,
+            backgroundColor: type === 'dark' ? 'rgb(37,47,53)' : Theme.Pure,
+            borderColor: Theme.LightGray,
           },
         ]}
       />
       <View style={styles.sendCont}>
         <Pressable
-          disabled={isDisabled}
+          disabled={isDisabled || isSendingComment}
           onPress={async () => {
+            setIsSendingComment(true);
             const isSuccess = await onSendPress(insideText);
+            setIsSendingComment(false);
             if (isSuccess) {
               setInsideText('');
             }
@@ -403,11 +425,14 @@ const RenderHeader = ({
             style={[
               styles.send,
               {
-                color: isDisabled ? Theme.Placeholder : '#70a1ff',
-                opacity: isDisabled ? 0.7 : 1,
+                color:
+                  isDisabled || isSendingComment
+                    ? Theme.Placeholder
+                    : Theme.DarkPurple,
+                opacity: isDisabled || isSendingComment ? 0.7 : 1,
               },
             ]}>
-            Send
+            {isSendingComment ? 'Sending...' : 'Send'}
           </Text>
         </Pressable>
       </View>

@@ -7,6 +7,7 @@ import ThemeContext from '../contexts/ThemeContext';
 import Profile from '../pages/Profile';
 import Settings from '../pages/Settings';
 import EditProfile from '../pages/EditProfile';
+import Header from '../components/Header';
 
 const Stack = createNativeStackNavigator();
 
@@ -38,12 +39,7 @@ const ProfileNav = () => {
         component={EditProfile}
         options={{
           headerShown: true,
-          title: 'Edit Profile',
-          headerStyle: {
-            backgroundColor: Theme.PrimaryBackground,
-          },
-          headerTintColor: Theme.PrimaryText,
-          headerShadowVisible: false,
+          header: () => <Header title="Edit Profile" />,
         }}
       />
       <Stack.Screen name="Settings" component={Settings} />
