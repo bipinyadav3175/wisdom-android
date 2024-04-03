@@ -1,7 +1,9 @@
 
 # Wisdom
 
-A platform for sharing your wisdom through words and images **(scrubbed)**
+A platform for sharing your wisdom through words and images
+
+Server repo: [here](https://github.com/bipinyadav3175/server)
 
 
 ## Demo
